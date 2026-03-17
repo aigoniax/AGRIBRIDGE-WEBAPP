@@ -24,6 +24,7 @@ function Login() {
       const data = await loginUser(email, password);
       if (data.success) {
         sessionStorage.setItem('user', JSON.stringify(data));
+        sessionStorage.setItem('token', data.token);
         navigate('/dashboard');
       } else {
         setError(data.message);
