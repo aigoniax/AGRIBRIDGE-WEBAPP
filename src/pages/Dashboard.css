@@ -143,3 +143,95 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); }
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* PROFILE SECTION */
+.profile-section {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(45, 106, 79, 0.07);
+}
+
+.profile-section h2 {
+  font-family: 'Playfair Display', serif;
+  color: var(--green-dark);
+  margin-bottom: 1.5rem;
+}
+
+.photo-area {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--green-light);
+}
+
+.profile-info p {
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 400px;
+  margin-top: 1rem;
+}
+
+.edit-form input {
+  padding: 0.6rem 1rem;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+}
+
+.edit-form input:focus {
+  outline: none;
+  border-color: var(--green-light);
+}
+
+.btn-green {
+  padding: 0.5rem 1.2rem;
+  background: var(--green-dark);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: background 0.2s;
+  width: fit-content;
+}
+
+.btn-green:hover { background: var(--green-light); }
+
+.btn-outline {
+  padding: 0.5rem 1.2rem;
+  background: transparent;
+  border: 1.5px solid var(--green-dark);
+  color: var(--green-dark);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  width: fit-content;
+}
+
+.password-area { margin-top: 1.5rem; }
+
+.msg {
+  color: var(--green-dark);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
