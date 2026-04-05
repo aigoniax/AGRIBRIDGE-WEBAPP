@@ -25,7 +25,13 @@ function Login() {
       if (data.success) {
         sessionStorage.setItem('user', JSON.stringify(data));
         sessionStorage.setItem('token', data.token);
-        navigate('/dashboard');
+
+        // Redirect based on role
+        if (data.role === 'ADMIN') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
       } else {
         setError(data.message);
       }
