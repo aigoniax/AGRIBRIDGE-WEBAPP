@@ -9,13 +9,7 @@ export const loginUser = async (email, password) => {
 
 export const registerUser = async (fullName, email, password, confirmPassword, phone, location, role) => {
   const response = await axios.post(`${API_BASE}/register`, {
-    fullName,
-    email,
-    password,
-    confirmPassword,
-    phone,
-    location,
-    role,
+    fullName, email, password, confirmPassword, phone, location, role,
   });
   return response.data;
 };
@@ -52,5 +46,21 @@ export const uploadPhoto = async (token, file) => {
       'Content-Type': 'multipart/form-data'
     }
   });
+  return response.data;
+};
+
+// Admin API calls
+export const getPendingFarmers = async () => {
+  const response = await axios.get(`${API_BASE}/admin/pending-farmers`);
+  return response.data;
+};
+
+export const approveFarmer = async (id) => {
+  const response = await axios.put(`${API_BASE}/admin/approve/${id}`);
+  return response.data;
+};
+
+export const rejectFarmer = async (id) => {
+  const response = await axios.put(`${API_BASE}/admin/reject/${id}`);
   return response.data;
 };
