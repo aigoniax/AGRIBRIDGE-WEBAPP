@@ -64,3 +64,39 @@ export const rejectFarmer = async (id) => {
   const response = await axios.put(`${API_BASE}/admin/reject/${id}`);
   return response.data;
 };
+
+// Listing API calls
+export const getAllListings = async (search = '', category = '') => {
+  const response = await axios.get(`${API_BASE}/listings`, {
+    params: { search, category }
+  });
+  return response.data;
+};
+
+export const getMyListings = async (token) => {
+  const response = await axios.get(`${API_BASE}/listings/my-listings`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+
+export const createListing = async (token, listingData) => {
+  const response = await axios.post(`${API_BASE}/listings`, listingData, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+
+export const updateListing = async (token, id, listingData) => {
+  const response = await axios.put(`${API_BASE}/listings/${id}`, listingData, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+
+export const deleteListing = async (token, id) => {
+  const response = await axios.delete(`${API_BASE}/listings/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};

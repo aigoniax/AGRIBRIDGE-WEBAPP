@@ -253,3 +253,14 @@ body {
   .brand-name { font-size: 2rem; }
   .brand-logo { font-size: 2.5rem; }
 }
+
+.success-message {
+  background: #D8F3DC;
+  border-left: 4px solid #2D6A4F;
+  color: #1B4332;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  line-height: 1.5;
+}

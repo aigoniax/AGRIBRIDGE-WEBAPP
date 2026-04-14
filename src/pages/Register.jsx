@@ -14,10 +14,12 @@ function Register() {
   const [location, setLocation] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccessMsg('');
 
     if (!fullName || !email || !password || !confirmPassword || !phone || !location) {
       setError('Please fill in all fields.');
@@ -33,8 +35,15 @@ function Register() {
     try {
       const data = await registerUser(fullName, email, password, confirmPassword, phone, location, role);
       if (data.success) {
-        sessionStorage.setItem('user', JSON.stringify(data));
-        navigate('/dashboard');
+        if (role === 'FARMER') {
+          // Farmers need admin approval first — show message then redirect to login
+          setSuccessMsg('Registration successful! Your account is pending admin approval. Please wait for an email confirmation before logging in.');
+          setTimeout(() => navigate('/login'), 4000);
+        } else {
+          // Buyers are auto-approved — redirect to login to sign in
+          setSuccessMsg('Registration successful! You can now log in.');
+          setTimeout(() => navigate('/login'), 2000);
+        }
       } else {
         setError(data.message);
       }
@@ -72,49 +81,93 @@ function Register() {
 
           <form onSubmit={handleRegister} className="auth-form">
             <div className="role-selector">
-              <button type="button" className={`role-btn ${role === 'FARMER' ? 'active' : ''}`} onClick={() => setRole('FARMER')}>
+              <button
+                type="button"
+                className={`role-btn ${role === 'FARMER' ? 'active' : ''}`}
+                onClick={() => setRole('FARMER')}
+              >
                 🌾 I'm a Farmer
               </button>
-              <button type="button" className={`role-btn ${role === 'BUYER' ? 'active' : ''}`} onClick={() => setRole('BUYER')}>
+              <button
+                type="button"
+                className={`role-btn ${role === 'BUYER' ? 'active' : ''}`}
+                onClick={() => setRole('BUYER')}
+              >
                 🛒 I'm a Buyer
               </button>
             </div>
 
             <div className="form-group">
               <label>Full Name</label>
-              <input type="text" placeholder="Enter your full name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+              <input
+                type="text"
+                placeholder="Enter your full name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
             </div>
 
             <div className="form-group">
               <label>Email</label>
-              <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
 
             <div className="form-row">
               <div className="form-group">
                 <label>Password</label>
-                <input type="password" placeholder="Create a password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input
+                  type="password"
+                  placeholder="Create a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
               <div className="form-group">
                 <label>Confirm Password</label>
-                <input type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                <input
+                  type="password"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
               </div>
             </div>
 
             <div className="form-row">
               <div className="form-group">
                 <label>Phone</label>
-                <input type="text" placeholder="Your phone number" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                <input
+                  type="text"
+                  placeholder="Your phone number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
               </div>
               <div className="form-group">
                 <label>Location</label>
-                <input type="text" placeholder="Your city / province" value={location} onChange={(e) => setLocation(e.target.value)} />
+                <input
+                  type="text"
+                  placeholder="Your city / province"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                />
               </div>
             </div>
 
             {error && <div className="error-message">⚠ {error}</div>}
 
-            <button type="submit" className="auth-btn" disabled={loading}>
+            {successMsg && (
+              <div className="success-message">
+                ✅ {successMsg}
+              </div>
+            )}
+
+            <button type="submit" className="auth-btn" disabled={loading || successMsg}>
               {loading ? 'Creating account...' : 'Create Account'}
             </button>
           </form>

@@ -8,6 +8,7 @@ function AdminDashboard() {
     const [farmers, setFarmers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [actionMsg, setActionMsg] = useState('');
+    const [processingId, setProcessingId] = useState(null); // tracks which button is loading
 
     useEffect(() => {
         const user = JSON.parse(sessionStorage.getItem('user'));
@@ -31,25 +32,35 @@ function AdminDashboard() {
     };
 
     const handleApprove = async (id, name) => {
+        if (processingId) return; // prevent double clicking
+        setProcessingId(`approve-${id}`);
+        setActionMsg('');
         try {
         await approveFarmer(id);
-        setActionMsg(`✅ ${name} has been approved!`);
+        setActionMsg(`✅ ${name} has been approved! A confirmation email has been sent.`);
         fetchPendingFarmers();
         } catch (err) {
         setActionMsg('❌ Failed to approve. Please try again.');
+        } finally {
+        setProcessingId(null);
         }
-        setTimeout(() => setActionMsg(''), 3000);
+        setTimeout(() => setActionMsg(''), 4000);
     };
 
     const handleReject = async (id, name) => {
+        if (processingId) return; // prevent double clicking
+        setProcessingId(`reject-${id}`);
+        setActionMsg('');
         try {
         await rejectFarmer(id);
         setActionMsg(`❌ ${name} has been rejected.`);
         fetchPendingFarmers();
         } catch (err) {
         setActionMsg('❌ Failed to reject. Please try again.');
+        } finally {
+        setProcessingId(null);
         }
-        setTimeout(() => setActionMsg(''), 3000);
+        setTimeout(() => setActionMsg(''), 4000);
     };
 
     const handleLogout = () => {
@@ -108,20 +119,28 @@ function AdminDashboard() {
                         <button
                             className="approve-btn"
                             onClick={() => handleApprove(farmer.id, farmer.fullName)}
+                            disabled={processingId !== null}
                         >
-                            ✅ Approve
+                            {processingId === `approve-${farmer.id}` ? '⏳ Approving...' : '✅ Approve'}
                         </button>
                         <button
                             className="reject-btn"
                             onClick={() => handleReject(farmer.id, farmer.fullName)}
+                            disabled={processingId !== null}
                         >
-                            ❌ Reject
+                            {processingId === `reject-${farmer.id}` ? '⏳ Rejecting...' : '❌ Reject'}
                         </button>
                         </td>
                     </tr>
                     ))}
                 </tbody>
                 </table>
+            </div>
+            )}
+
+            {processingId && (
+            <div className="admin-processing-bar">
+                ⏳ Processing action, please wait... (sending email may take a few seconds)
             </div>
             )}
         </div>
