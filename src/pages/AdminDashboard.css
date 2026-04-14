@@ -171,3 +171,14 @@ body { font-family: 'DM Sans', sans-serif; background: #F5F5F5; }
 }
 
 .reject-btn:hover { opacity: 0.8; }
+
+.admin-processing-bar {
+    margin-top: 1.5rem;
+    background: #fff8e1;
+    border-left: 4px solid #f59e0b;
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #92400e;
+    font-weight: 500;
+}

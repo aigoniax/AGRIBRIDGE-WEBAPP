@@ -29,6 +29,10 @@ function Login() {
         // Redirect based on role
         if (data.role === 'ADMIN') {
           navigate('/admin');
+        } else if (data.role === 'FARMER') {
+          navigate('/farmer-dashboard');
+        } else if (data.role === 'BUYER') {
+          navigate('/buyer-dashboard');
         } else {
           navigate('/dashboard');
         }
