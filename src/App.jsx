@@ -9,6 +9,7 @@ import BuyerDashboard from './pages/BuyerDashboard.jsx';
 import MyListings from './pages/MyListings.jsx';
 import ListingDetail from './pages/ListingDetail.jsx';
 import MyOrders from './pages/MyOrders.jsx';
+import Chat from './pages/Chat.jsx';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/my-listings" element={<MyListings />} />
         <Route path="/listing/:id" element={<ListingDetail />} />
         <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/messages/:orderId" element={<Chat />} />
       </Routes>
     </Router>
   );

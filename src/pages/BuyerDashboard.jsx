@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllListings } from '../api/auth';
+import { getAllListings, getUnreadCount } from '../api/auth';
 import './BuyerDashboard.css';
 
 function BuyerDashboard() {
@@ -10,6 +10,8 @@ function BuyerDashboard() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('');
+    const [unreadCount, setUnreadCount] = useState(0);
+    const pollRef = useRef(null);
 
     const categories = ['All', 'Vegetables', 'Fruits', 'Grains', 'Herbs', 'Others'];
 
@@ -17,16 +19,24 @@ function BuyerDashboard() {
         const stored = sessionStorage.getItem('user');
         const token = sessionStorage.getItem('token');
         if (!stored || !token) {
-        navigate('/login');
-        return;
+            navigate('/login');
+            return;
         }
         const parsedUser = JSON.parse(stored);
         if (parsedUser.role !== 'BUYER') {
-        navigate('/login');
-        return;
+            navigate('/login');
+            return;
         }
         setUser(parsedUser);
         fetchListings('', '');
+        fetchUnreadCount(token);
+
+        // Poll unread count every 10 seconds
+        pollRef.current = setInterval(() => {
+            fetchUnreadCount(sessionStorage.getItem('token'));
+        }, 10000);
+
+        return () => clearInterval(pollRef.current);
     }, [navigate]);
 
     const fetchListings = async (searchTerm, categoryFilter) => {
@@ -41,6 +51,15 @@ function BuyerDashboard() {
         console.error('Failed to fetch listings', err);
         } finally {
         setLoading(false);
+        }
+    };
+
+    const fetchUnreadCount = async (token) => {
+        try {
+            const data = await getUnreadCount(token);
+            if (data.success) setUnreadCount(data.data || 0);
+        } catch (err) {
+            console.error('Failed to fetch unread count', err);
         }
     };
 
@@ -81,6 +100,9 @@ function BuyerDashboard() {
             <span className="bd-nav-name">👤 {user.fullName}</span>
             <button className="bd-orders-btn" onClick={() => navigate('/my-orders')}>
                 📦 My Orders
+                {unreadCount > 0 && (
+                    <span className="bd-msg-badge">{unreadCount}</span>
+                )}
             </button>
             <button className="bd-profile-btn" onClick={() => navigate('/profile')}>Profile</button>
             <button className="bd-logout-btn" onClick={handleLogout}>Logout</button>
