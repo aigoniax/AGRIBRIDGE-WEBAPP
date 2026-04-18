@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getMyListings, createListing, getMyOrders } from '../api/auth';
+import { getMyListings, createListing, getMyOrders, getUnreadCount } from '../api/auth';
 import './FarmerDashboard.css';
 
 const CATEGORIES = ['Vegetables', 'Fruits', 'Grains', 'Herbs', 'Others'];
@@ -35,15 +35,26 @@ const FRESHNESS_OPTIONS = [
     const [pickupLocation, setPickupLocation] = useState('');
     const [additionalNotes, setAdditionalNotes] = useState('');
 
+    const [unreadCount, setUnreadCount] = useState(0);
+    const pollRef = useRef(null);
+
     useEffect(() => {
-        const stored = sessionStorage.getItem('user');
-        const token = sessionStorage.getItem('token');
-        if (!stored || !token) { navigate('/login'); return; }
-        const parsedUser = JSON.parse(stored);
-        if (parsedUser.role !== 'FARMER') { navigate('/login'); return; }
-        setUser(parsedUser);
-        fetchMyListings(token);
-        fetchMyOrders(token);
+    const stored = sessionStorage.getItem('user');
+    const token = sessionStorage.getItem('token');
+    if (!stored || !token) { navigate('/login'); return; }
+    const parsedUser = JSON.parse(stored);
+    if (parsedUser.role !== 'FARMER') { navigate('/login'); return; }
+    setUser(parsedUser);
+    fetchMyListings(token);
+    fetchMyOrders(token);
+    fetchUnreadCount(token);
+
+    // Poll unread count every 10 seconds
+    pollRef.current = setInterval(() => {
+        fetchUnreadCount(sessionStorage.getItem('token'));
+    }, 10000);
+
+    return () => clearInterval(pollRef.current);
     }, [navigate]);
 
     const fetchMyListings = async (token) => {
@@ -64,6 +75,15 @@ const FRESHNESS_OPTIONS = [
         if (data.success) setOrders(data.data || []);
         } catch (err) {
         console.error('Failed to fetch orders', err);
+        }
+    };
+
+    const fetchUnreadCount = async (token) => {
+        try {
+            const data = await getUnreadCount(token);
+            if (data.success) setUnreadCount(data.data || 0);
+        } catch (err) {
+            console.error('Failed to fetch unread count', err);
         }
     };
 
@@ -158,7 +178,10 @@ const FRESHNESS_OPTIONS = [
             <button className="fd-profile-btn" onClick={() => navigate('/my-orders')}>
                 📋 My Sales
                 {pendingOrders > 0 && (
-                <span className="fd-notif-badge">{pendingOrders}</span>
+                    <span className="fd-notif-badge">{pendingOrders}</span>
+                )}
+                {unreadCount > 0 && (
+                    <span className="fd-msg-badge">{unreadCount}</span>
                 )}
             </button>
             <button className="fd-profile-btn" onClick={() => navigate('/profile')}>Profile</button>

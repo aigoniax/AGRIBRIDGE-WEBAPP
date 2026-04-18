@@ -163,3 +163,34 @@ export const updateOrderStatus = async (token, orderId, status) => {
   );
   return response.data;
 };
+
+// Message API calls
+export const getMessages = async (token, orderId) => {
+  const response = await axios.get(`${API_BASE}/messages/order/${orderId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+
+export const sendMessage = async (token, orderId, messageText) => {
+  const response = await axios.post(
+    `${API_BASE}/messages/order/${orderId}`,
+    { messageText },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
+};
+
+export const getUnreadCount = async (token) => {
+  const response = await axios.get(`${API_BASE}/messages/unread-count`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+
+export const getUnreadCountForOrder = async (token, orderId) => {
+  const response = await axios.get(`${API_BASE}/messages/order/${orderId}/unread-count`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
