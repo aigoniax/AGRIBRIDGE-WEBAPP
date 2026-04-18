@@ -6,6 +6,9 @@ import Profile from './pages/Profile.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import FarmerDashboard from './pages/FarmerDashboard.jsx';
 import BuyerDashboard from './pages/BuyerDashboard.jsx';
+import MyListings from './pages/MyListings.jsx';
+import ListingDetail from './pages/ListingDetail.jsx';
+import MyOrders from './pages/MyOrders.jsx';
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/farmer-dashboard" element={<FarmerDashboard />} />
         <Route path="/buyer-dashboard" element={<BuyerDashboard />} />
+        <Route path="/my-listings" element={<MyListings />} />
+        <Route path="/listing/:id" element={<ListingDetail />} />
+        <Route path="/my-orders" element={<MyOrders />} />
       </Routes>
     </Router>
   );

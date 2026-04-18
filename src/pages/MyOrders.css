@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+    --green-dark: #2D6A4F;
+    --green-light: #52B788;
+    --bg: #F5F5F5;
+    --text-dark: #1B1B1B;
+    --white: #FFFFFF;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); }
+
+/* NAV */
+.mo-nav {
+    background: var(--white);
+    padding: 1rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 12px rgba(45, 106, 79, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.mo-nav-brand { display: flex; align-items: center; gap: 0.8rem; }
+
+.mo-nav-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--green-dark);
+    font-weight: 700;
+}
+
+.mo-nav-badge {
+    background: var(--green-dark);
+    color: white;
+    font-size: 0.72rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.mo-nav-right { display: flex; align-items: center; gap: 1rem; }
+.mo-nav-name { font-size: 0.9rem; color: #555; }
+
+.mo-back-btn, .mo-logout-btn {
+    padding: 0.45rem 1.1rem;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mo-back-btn {
+    background: transparent;
+    border: 1.5px solid var(--green-light);
+    color: var(--green-dark);
+}
+
+.mo-back-btn:hover { background: var(--green-light); color: white; }
+
+.mo-logout-btn {
+    background: transparent;
+    border: 1.5px solid var(--green-dark);
+    color: var(--green-dark);
+}
+
+.mo-logout-btn:hover { background: var(--green-dark); color: white; }
+
+/* BODY */
+.mo-body {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+}
+
+.mo-header { margin-bottom: 1.5rem; }
+
+.mo-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--text-dark);
+    margin-bottom: 0.4rem;
+}
+
+.mo-header p { color: #777; font-size: 0.95rem; }
+
+/* FILTERS */
+.mo-filters {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.mo-filter-btn {
+    padding: 0.4rem 1.1rem;
+    border-radius: 20px;
+    border: 1.5px solid #ddd;
+    background: var(--white);
+    color: #666;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mo-filter-btn:hover { border-color: var(--green-light); color: var(--green-dark); }
+.mo-filter-btn.active { background: var(--green-dark); border-color: var(--green-dark); color: white; }
+
+/* ORDERS LIST */
+.mo-orders-list { display: flex; flex-direction: column; gap: 1.2rem; }
+
+/* ORDER CARD */
+.mo-order-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(45, 106, 79, 0.07);
+    display: flex;
+    gap: 1.5rem;
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.mo-order-card:hover { border-color: var(--green-light); }
+
+.mo-order-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #D8F3DC;
+    flex-shrink: 0;
+}
+
+.mo-order-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.mo-order-img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+}
+
+.mo-order-info { flex: 1; }
+
+.mo-order-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.6rem;
+}
+
+.mo-order-top h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.2rem;
+}
+
+.mo-order-number { font-size: 0.78rem; color: #999; }
+
+/* STATUS BADGES */
+.mo-status {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.8rem;
+    border-radius: 20px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-pending { background: #FEF3C7; color: #92400E; }
+.status-confirmed { background: #DBEAFE; color: #1E40AF; }
+.status-completed { background: #D8F3DC; color: #1B4332; }
+.status-cancelled { background: #FFE5E5; color: #7F1D1D; }
+
+.mo-order-details {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.mo-total { font-weight: 700; color: var(--green-dark); }
+
+.mo-pickup, .mo-party, .mo-notes {
+    font-size: 0.83rem;
+    color: #777;
+    margin-bottom: 0.3rem;
+}
+
+.mo-notes { font-style: italic; }
+
+/* ORDER ACTIONS */
+.mo-order-actions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.mo-btn-confirm, .mo-btn-complete, .mo-btn-cancel {
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+}
+
+.mo-btn-confirm { background: #D8F3DC; color: #1B4332; }
+.mo-btn-complete { background: #DBEAFE; color: #1E40AF; }
+.mo-btn-cancel { background: #FFE5E5; color: #7F1D1D; }
+
+.mo-btn-confirm:hover,
+.mo-btn-complete:hover,
+.mo-btn-cancel:hover { opacity: 0.75; }
+
+.mo-btn-confirm:disabled,
+.mo-btn-complete:disabled,
+.mo-btn-cancel:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* EMPTY */
+.mo-empty {
+    text-align: center;
+    padding: 4rem;
+    color: #888;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mo-empty span { font-size: 3rem; }
+
+.mo-btn-primary {
+    padding: 0.75rem 2rem;
+    background: var(--green-dark);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.mo-btn-primary:hover { background: var(--green-light); }
+
+@media (max-width: 768px) {
+    .mo-order-card { flex-direction: column; }
+    .mo-nav { flex-direction: column; gap: 1rem; }
+    .mo-order-img { width: 100%; height: 200px; }
+}

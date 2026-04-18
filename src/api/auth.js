@@ -80,16 +80,50 @@ export const getMyListings = async (token) => {
   return response.data;
 };
 
-export const createListing = async (token, listingData) => {
-  const response = await axios.post(`${API_BASE}/listings`, listingData, {
-    headers: { Authorization: `Bearer ${token}` }
+export const createListing = async (token, listingData, photoFile) => {
+  const formData = new FormData();
+  formData.append('produceName', listingData.produceName);
+  formData.append('category', listingData.category);
+  formData.append('quantity', listingData.quantity);
+  formData.append('unit', listingData.unit);
+  formData.append('price', listingData.price);
+  formData.append('freshness', listingData.freshness);
+  formData.append('pickupLocation', listingData.pickupLocation);
+  if (listingData.additionalNotes) {
+    formData.append('additionalNotes', listingData.additionalNotes);
+  }
+  if (photoFile) {
+    formData.append('photo', photoFile);
+  }
+  const response = await axios.post(`${API_BASE}/listings`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
+    }
   });
   return response.data;
 };
 
-export const updateListing = async (token, id, listingData) => {
-  const response = await axios.put(`${API_BASE}/listings/${id}`, listingData, {
-    headers: { Authorization: `Bearer ${token}` }
+export const updateListing = async (token, id, listingData, photoFile) => {
+  const formData = new FormData();
+  formData.append('produceName', listingData.produceName);
+  formData.append('category', listingData.category);
+  formData.append('quantity', listingData.quantity);
+  formData.append('unit', listingData.unit);
+  formData.append('price', listingData.price);
+  formData.append('freshness', listingData.freshness);
+  formData.append('pickupLocation', listingData.pickupLocation);
+  if (listingData.additionalNotes) {
+    formData.append('additionalNotes', listingData.additionalNotes);
+  }
+  if (photoFile) {
+    formData.append('photo', photoFile);
+  }
+  const response = await axios.put(`${API_BASE}/listings/${id}`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data'
+    }
   });
   return response.data;
 };
@@ -98,5 +132,34 @@ export const deleteListing = async (token, id) => {
   const response = await axios.delete(`${API_BASE}/listings/${id}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
+  return response.data;
+};
+
+// Order API calls
+export const getListingById = async (id) => {
+  const response = await axios.get(`${API_BASE}/listings/${id}`);
+  return response.data;
+};
+
+export const placeOrder = async (token, orderData) => {
+  const response = await axios.post(`${API_BASE}/orders`, orderData, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+
+export const getMyOrders = async (token) => {
+  const response = await axios.get(`${API_BASE}/orders/my-orders`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+
+export const updateOrderStatus = async (token, orderId, status) => {
+  const response = await axios.put(
+    `${API_BASE}/orders/${orderId}/status`,
+    { status },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
   return response.data;
 };

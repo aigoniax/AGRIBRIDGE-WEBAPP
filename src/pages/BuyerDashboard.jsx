@@ -131,8 +131,8 @@ function BuyerDashboard() {
                 {listings.map((listing) => (
                 <div className="bd-listing-card" key={listing.id}>
                     <div className="bd-listing-img">
-                    {listing.photoUrl ? (
-                        <img src={listing.photoUrl} alt={listing.produceName} />
+                    {listing.photoBase64 ? (
+                        <img src={listing.photoBase64} alt={listing.produceName} />
                     ) : (
                         <div className="bd-listing-img-placeholder">🥬</div>
                     )}
