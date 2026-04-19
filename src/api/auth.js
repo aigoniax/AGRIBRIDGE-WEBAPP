@@ -194,3 +194,19 @@ export const getUnreadCountForOrder = async (token, orderId) => {
   });
   return response.data;
 };
+
+// Admin statistics and listing moderation
+export const getAdminStatistics = async () => {
+  const response = await axios.get(`${API_BASE}/admin/statistics`);
+  return response.data;
+};
+
+export const getAdminListings = async () => {
+  const response = await axios.get(`${API_BASE}/listings/admin-all`);
+  return response.data;
+};
+
+export const removeAdminListing = async (id) => {
+  const response = await axios.delete(`${API_BASE}/admin/listings/${id}`);
+  return response.data;
+};
