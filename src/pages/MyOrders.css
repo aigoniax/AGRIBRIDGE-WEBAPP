@@ -315,3 +315,18 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); }
 }
 
 .mo-btn-message-active:hover { opacity: 0.85 !important; }
+
+@media (max-width: 480px) {
+    .mo-nav { flex-direction: column; gap: 0.8rem; padding: 1rem; }
+    .mo-nav-right { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+    .mo-nav-name { width: 100%; text-align: center; }
+    .mo-body { padding: 1.2rem 1rem; }
+    .mo-header h1 { font-size: 1.4rem; }
+    .mo-order-card { flex-direction: column; gap: 1rem; }
+    .mo-order-img { width: 100%; height: 180px; }
+    .mo-order-top { flex-direction: column; gap: 0.5rem; }
+    .mo-order-top-right { align-items: flex-start; }
+    .mo-order-actions { flex-direction: column; }
+    .mo-btn-confirm, .mo-btn-complete,
+    .mo-btn-cancel, .mo-btn-message { width: 100%; text-align: center; }
+}

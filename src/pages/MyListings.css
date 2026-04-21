@@ -464,3 +464,18 @@
     .ml-nav { flex-direction: column; gap: 1rem; }
     .modal-grid { grid-template-columns: 1fr; }
     }
+
+    @media (max-width: 480px) {
+    .ml-nav { flex-direction: column; gap: 0.8rem; padding: 1rem; }
+    .ml-nav-right { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+    .ml-nav-name { width: 100%; text-align: center; }
+    .ml-body { padding: 1.2rem 1rem; }
+    .ml-header h1 { font-size: 1.4rem; }
+    .ml-grid { grid-template-columns: 1fr; }
+    .modal-grid { grid-template-columns: 1fr; }
+    .modal-field.full { grid-column: 1; }
+    .modal-footer { flex-direction: column; }
+    .modal-footer button { width: 100%; }
+    .delete-modal-actions { flex-direction: column; }
+    .delete-modal-actions button { width: 100%; }
+    }

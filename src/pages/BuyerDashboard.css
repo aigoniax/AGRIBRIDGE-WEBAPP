@@ -321,3 +321,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); }
     align-items: center;
     justify-content: center;
 }
+
+@media (max-width: 480px) {
+    .bd-nav { flex-direction: column; gap: 0.8rem; padding: 1rem; }
+    .bd-nav-right { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+    .bd-nav-name { width: 100%; text-align: center; }
+    .bd-body { padding: 1.2rem 1rem; }
+    .bd-welcome h1 { font-size: 1.4rem; }
+    .bd-listings-grid { grid-template-columns: 1fr; }
+}

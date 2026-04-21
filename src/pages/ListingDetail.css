@@ -420,3 +420,16 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); }
     .ld-nav { flex-direction: column; gap: 0.8rem; }
     .ld-info-grid { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 480px) {
+    .ld-nav { flex-direction: column; gap: 0.8rem; padding: 1rem; }
+    .ld-nav-right { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+    .ld-nav-name { width: 100%; text-align: center; }
+    .ld-body { padding: 1.2rem 1rem; }
+    .ld-content { grid-template-columns: 1fr; }
+    .ld-info-grid { grid-template-columns: 1fr; }
+    .ld-detail-header { flex-direction: column; gap: 0.5rem; }
+    .ld-detail-header h1 { font-size: 1.4rem; }
+    .ld-success-actions { flex-direction: column; }
+    .ld-btn-primary, .ld-btn-secondary { width: 100%; text-align: center; }
+}

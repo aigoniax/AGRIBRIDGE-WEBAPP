@@ -291,3 +291,13 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); }
     .chat-wrapper { height: calc(100vh - 160px); padding: 0 0.5rem; }
     .chat-bubble { max-width: 85%; }
 }
+
+@media (max-width: 480px) {
+    .chat-nav { flex-direction: column; gap: 0.8rem; padding: 1rem; }
+    .chat-nav-right { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+    .chat-nav-name { width: 100%; text-align: center; }
+    .chat-wrapper { padding: 0; margin: 0; height: calc(100vh - 180px); }
+    .chat-bubble { max-width: 90%; }
+    .chat-header { border-radius: 0; }
+    .chat-input-area { border-radius: 0; padding: 0.8rem; }
+}

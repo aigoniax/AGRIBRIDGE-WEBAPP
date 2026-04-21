@@ -553,3 +553,21 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); }
     align-items: center;
     justify-content: center;
 }
+
+@media (max-width: 480px) {
+    .fd-nav { flex-direction: column; gap: 0.8rem; padding: 1rem; }
+    .fd-nav-right { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+    .fd-nav-name { width: 100%; text-align: center; }
+    .fd-stats { grid-template-columns: repeat(2, 1fr); }
+    .fd-body { padding: 1.2rem 1rem; }
+    .fd-welcome h1 { font-size: 1.4rem; }
+    .fd-section { padding: 1.2rem; }
+    .fd-actions { flex-direction: column; }
+    .fd-btn-primary, .fd-btn-secondary { width: 100%; text-align: center; }
+    .modal-grid { grid-template-columns: 1fr; }
+    .modal-field.full { grid-column: 1; }
+    .modal-box { border-radius: 12px; }
+    .modal-footer { flex-direction: column; }
+    .modal-footer .fd-btn-primary,
+    .modal-footer .fd-btn-secondary { width: 100%; }
+}
