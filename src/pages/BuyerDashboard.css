@@ -302,10 +302,14 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); }
     .bd-listings-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-.fd-msg-badge {
+.bd-orders-btn {
+    position: relative;
+}
+
+.bd-msg-badge {
     position: absolute;
     top: -6px;
-    left: -6px;
+    right: -6px;
     background: #7C3AED;
     color: white;
     font-size: 0.65rem;
