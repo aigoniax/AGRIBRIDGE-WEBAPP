@@ -273,3 +273,23 @@ body {
     .form-row { flex-direction: column; gap: 0; }
     .role-selector { flex-direction: column; }
 }
+
+/* PASSWORD HINTS */
+.password-hints {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+  padding: 0.7rem 0.9rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.hint-item {
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.hint-pass { color: #1B4332; }
+.hint-fail { color: #9ca3af; }
