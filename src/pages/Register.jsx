@@ -128,7 +128,7 @@ function Register() {
               />
             </div>
 
-            {/* Password — hints always visible */}
+            {/* Password — hints always rendered but hidden until typing */}
             <div className="form-group">
               <label>Password</label>
               <input
@@ -137,7 +137,7 @@ function Register() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <div className="password-hints">
+              <div className={`password-hints ${password.length > 0 ? 'hints-visible' : 'hints-hidden'}`}>
                 {passwordRules.map((rule) => (
                   <div key={rule.label} className={`hint-item ${rule.test(password) ? 'hint-pass' : 'hint-fail'}`}>
                     {rule.test(password) ? '✅' : '❌'} {rule.label}
@@ -146,7 +146,7 @@ function Register() {
               </div>
             </div>
 
-            {/* Confirm Password — match indicator always visible */}
+            {/* Confirm Password — match indicator always rendered but hidden until typing */}
             <div className="form-group">
               <label>Confirm Password</label>
               <input
@@ -155,8 +155,8 @@ function Register() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <div className={`hint-item ${confirmPassword && password === confirmPassword ? 'hint-pass' : 'hint-fail'}`}>
-                {confirmPassword && password === confirmPassword ? '✅ Passwords match' : '❌ Passwords do not match'}
+              <div className={`hint-item ${confirmPassword.length > 0 ? (password === confirmPassword ? 'hint-pass' : 'hint-fail') : 'hints-hidden'}`}>
+                {password === confirmPassword ? '✅ Passwords match' : '❌ Passwords do not match'}
               </div>
             </div>
 
