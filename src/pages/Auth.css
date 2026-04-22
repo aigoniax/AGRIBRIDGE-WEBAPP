@@ -295,3 +295,8 @@ body {
 
 .hint-pass { color: #1B4332; }
 .hint-fail { color: #9ca3af; }
+
+.auth-card {
+  height: 620px;
+  overflow-y: auto;
+}

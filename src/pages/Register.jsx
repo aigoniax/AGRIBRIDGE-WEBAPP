@@ -23,7 +23,6 @@ function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
-  const [showPasswordHints, setShowPasswordHints] = useState(false);
 
   const allRulesPassed = passwordRules.every((r) => r.test(password));
 
@@ -98,7 +97,6 @@ function Register() {
               </button>
             </div>
 
-            {/* First Name + Last Name */}
             <div className="form-row">
               <div className="form-group">
                 <label>First Name</label>
@@ -130,26 +128,25 @@ function Register() {
               />
             </div>
 
-            {/* Password with live hints */}
+            {/* Password — hints always visible */}
             <div className="form-group">
               <label>Password</label>
               <input
                 type="password"
                 placeholder="Create a password"
                 value={password}
-                onChange={(e) => { setPassword(e.target.value); setShowPasswordHints(true); }}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              {showPasswordHints && (
-                <div className="password-hints">
-                  {passwordRules.map((rule) => (
-                    <div key={rule.label} className={`hint-item ${rule.test(password) ? 'hint-pass' : 'hint-fail'}`}>
-                      {rule.test(password) ? '✅' : '❌'} {rule.label}
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="password-hints">
+                {passwordRules.map((rule) => (
+                  <div key={rule.label} className={`hint-item ${rule.test(password) ? 'hint-pass' : 'hint-fail'}`}>
+                    {rule.test(password) ? '✅' : '❌'} {rule.label}
+                  </div>
+                ))}
+              </div>
             </div>
 
+            {/* Confirm Password — match indicator always visible */}
             <div className="form-group">
               <label>Confirm Password</label>
               <input
@@ -158,11 +155,9 @@ function Register() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              {confirmPassword && (
-                <div className={`hint-item ${password === confirmPassword ? 'hint-pass' : 'hint-fail'}`}>
-                  {password === confirmPassword ? '✅ Passwords match' : '❌ Passwords do not match'}
-                </div>
-              )}
+              <div className={`hint-item ${confirmPassword && password === confirmPassword ? 'hint-pass' : 'hint-fail'}`}>
+                {confirmPassword && password === confirmPassword ? '✅ Passwords match' : '❌ Passwords do not match'}
+              </div>
             </div>
 
             <div className="form-row">
