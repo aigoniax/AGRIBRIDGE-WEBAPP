@@ -137,8 +137,7 @@ function Register() {
                 type="password"
                 placeholder="Create a password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={() => setShowPasswordHints(true)}
+                onChange={(e) => { setPassword(e.target.value); setShowPasswordHints(true); }}
               />
               {showPasswordHints && (
                 <div className="password-hints">
