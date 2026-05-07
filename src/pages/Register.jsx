@@ -81,7 +81,7 @@ function Register() {
       </div>
 
       <div className="auth-right">
-        <div className="auth-card">
+        <div className="auth-card auth-card-register">
           <div className="auth-header">
             <h2>Create Account</h2>
             <p>Join AgriBridge today</p>
