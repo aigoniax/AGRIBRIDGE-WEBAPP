@@ -175,15 +175,21 @@ const FRESHNESS_OPTIONS = [
             </div>
             <div className="fd-nav-right">
             <span className="fd-nav-name">👤 {user.fullName}</span>
-            <button className="fd-profile-btn" onClick={() => navigate('/my-orders')}>
-                📋 My Sales
+            <div style={{ position: 'relative', display: 'inline-block' }}>
+                <button className="fd-profile-btn" onClick={() => navigate('/my-orders')}>
+                    📋 My Sales
+                </button>
                 {pendingOrders > 0 && (
-                    <span className="fd-notif-badge">{pendingOrders}</span>
+                    <span className="fd-notif-badge" style={{ top: '-6px', right: '-6px' }}>
+                        {pendingOrders}
+                    </span>
                 )}
                 {unreadCount > 0 && (
-                    <span className="fd-msg-badge">{unreadCount}</span>
+                    <span className="fd-msg-badge">
+                        {unreadCount}
+                    </span>
                 )}
-            </button>
+            </div>
             <button className="fd-profile-btn" onClick={() => navigate('/profile')}>Profile</button>
             <button className="fd-logout-btn" onClick={handleLogout}>Logout</button>
             </div>
