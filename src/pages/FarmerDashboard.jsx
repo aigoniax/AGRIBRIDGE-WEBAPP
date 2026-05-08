@@ -7,7 +7,7 @@ import './FarmerDashboard.css';
 import { MdListAlt, MdCheckCircle, MdStorefront } from 'react-icons/md';
 import { FaClock, FaCoins, FaUser, FaSignOutAlt, FaCamera, FaSeedling } from 'react-icons/fa';
 import { IoReceiptOutline } from 'react-icons/io5';
-import { RiUserLine } from 'react-icons/ri';
+import { RiUserFill } from 'react-icons/ri';
 
 const CATEGORIES = ['Vegetables', 'Fruits', 'Grains', 'Herbs', 'Others'];
 const FRESHNESS_OPTIONS = [
@@ -179,7 +179,7 @@ function FarmerDashboard() {
                 </div>
                 <div className="fd-nav-right">
                     <span className="fd-nav-name">
-                        <RiUserLine style={{ color: '#52B788', marginRight: '0.3rem', verticalAlign: 'middle' }} />
+                        <RiUserFill style={{ color: '#52B788', marginRight: '0.3rem', verticalAlign: 'middle' }} />
                         {user.fullName}
                     </span>
                     <div style={{ position: 'relative', display: 'inline-block' }}>
