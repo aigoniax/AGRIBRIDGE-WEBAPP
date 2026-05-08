@@ -3,29 +3,33 @@ import { useNavigate } from 'react-router-dom';
 import { getMyListings, createListing, getMyOrders, getUnreadCount } from '../api/auth';
 import './FarmerDashboard.css';
 
+// React Icons - Mix of Material Design + Font Awesome
+import { MdListAlt, MdCheckCircle, MdStorefront } from 'react-icons/md';
+import { FaClock, FaCoins, FaUser, FaSignOutAlt, FaCamera, FaSeedling } from 'react-icons/fa';
+import { IoReceiptOutline } from 'react-icons/io5';
+import { RiUserLine } from 'react-icons/ri';
+
 const CATEGORIES = ['Vegetables', 'Fruits', 'Grains', 'Herbs', 'Others'];
 const FRESHNESS_OPTIONS = [
     { value: 'TODAY', label: '🟢 Harvested Today' },
     { value: '1-2_DAYS', label: '🟡 1-2 Days Old' },
     { value: '3+_DAYS', label: '🔴 3+ Days Old' },
-    ];
-    const UNITS = ['kg', 'pieces', 'bundle', 'sack', 'liter'];
+];
+const UNITS = ['kg', 'pieces', 'bundle', 'sack', 'liter'];
 
-    function FarmerDashboard() {
+function FarmerDashboard() {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [listings, setListings] = useState([]);
     const [loadingListings, setLoadingListings] = useState(true);
     const [orders, setOrders] = useState([]);
 
-    // Modal state
     const [showModal, setShowModal] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [submitMsg, setSubmitMsg] = useState('');
     const [photoPreview, setPhotoPreview] = useState(null);
     const [photoFile, setPhotoFile] = useState(null);
 
-    // Form fields
     const [produceName, setProduceName] = useState('');
     const [category, setCategory] = useState('Vegetables');
     const [quantity, setQuantity] = useState('');
@@ -39,42 +43,41 @@ const FRESHNESS_OPTIONS = [
     const pollRef = useRef(null);
 
     useEffect(() => {
-    const stored = sessionStorage.getItem('user');
-    const token = sessionStorage.getItem('token');
-    if (!stored || !token) { navigate('/login'); return; }
-    const parsedUser = JSON.parse(stored);
-    if (parsedUser.role !== 'FARMER') { navigate('/login'); return; }
-    setUser(parsedUser);
-    fetchMyListings(token);
-    fetchMyOrders(token);
-    fetchUnreadCount(token);
+        const stored = sessionStorage.getItem('user');
+        const token = sessionStorage.getItem('token');
+        if (!stored || !token) { navigate('/login'); return; }
+        const parsedUser = JSON.parse(stored);
+        if (parsedUser.role !== 'FARMER') { navigate('/login'); return; }
+        setUser(parsedUser);
+        fetchMyListings(token);
+        fetchMyOrders(token);
+        fetchUnreadCount(token);
 
-    // Poll unread count every 10 seconds
-    pollRef.current = setInterval(() => {
-        fetchUnreadCount(sessionStorage.getItem('token'));
-    }, 10000);
+        pollRef.current = setInterval(() => {
+            fetchUnreadCount(sessionStorage.getItem('token'));
+        }, 10000);
 
-    return () => clearInterval(pollRef.current);
+        return () => clearInterval(pollRef.current);
     }, [navigate]);
 
     const fetchMyListings = async (token) => {
         setLoadingListings(true);
         try {
-        const data = await getMyListings(token);
-        if (data.success) setListings(data.data || []);
+            const data = await getMyListings(token);
+            if (data.success) setListings(data.data || []);
         } catch (err) {
-        console.error('Failed to fetch listings', err);
+            console.error('Failed to fetch listings', err);
         } finally {
-        setLoadingListings(false);
+            setLoadingListings(false);
         }
     };
 
     const fetchMyOrders = async (token) => {
         try {
-        const data = await getMyOrders(token);
-        if (data.success) setOrders(data.data || []);
+            const data = await getMyOrders(token);
+            if (data.success) setOrders(data.data || []);
         } catch (err) {
-        console.error('Failed to fetch orders', err);
+            console.error('Failed to fetch orders', err);
         }
     };
 
@@ -107,8 +110,8 @@ const FRESHNESS_OPTIONS = [
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-        setPhotoFile(file);
-        setPhotoPreview(URL.createObjectURL(file));
+            setPhotoFile(file);
+            setPhotoPreview(URL.createObjectURL(file));
         }
     };
 
@@ -116,30 +119,30 @@ const FRESHNESS_OPTIONS = [
         e.preventDefault();
         setSubmitMsg('');
         if (!produceName || !quantity || !price || !pickupLocation) {
-        setSubmitMsg('⚠ Please fill in all required fields.');
-        return;
+            setSubmitMsg('Please fill in all required fields.');
+            return;
         }
         setSubmitting(true);
         try {
-        const token = sessionStorage.getItem('token');
-        const listingData = {
-            produceName, category,
-            quantity: parseFloat(quantity),
-            unit, price: parseFloat(price),
-            freshness, pickupLocation, additionalNotes,
-        };
-        const data = await createListing(token, listingData, photoFile);
-        if (data.success) {
-            setSubmitMsg('✅ Listing created successfully!');
-            fetchMyListings(token);
-            setTimeout(() => handleCloseModal(), 1500);
-        } else {
-            setSubmitMsg(`⚠ ${data.message}`);
-        }
+            const token = sessionStorage.getItem('token');
+            const listingData = {
+                produceName, category,
+                quantity: parseFloat(quantity),
+                unit, price: parseFloat(price),
+                freshness, pickupLocation, additionalNotes,
+            };
+            const data = await createListing(token, listingData, photoFile);
+            if (data.success) {
+                setSubmitMsg('success');
+                fetchMyListings(token);
+                setTimeout(() => handleCloseModal(), 1500);
+            } else {
+                setSubmitMsg(data.message || 'Something went wrong.');
+            }
         } catch (err) {
-        setSubmitMsg('⚠ Failed to create listing. Please try again.');
+            setSubmitMsg('Failed to create listing. Please try again.');
         } finally {
-        setSubmitting(false);
+            setSubmitting(false);
         }
     };
 
@@ -167,215 +170,240 @@ const FRESHNESS_OPTIONS = [
 
     return (
         <div className="fd-container">
-        {/* NAV */}
-        <nav className="fd-nav">
-            <div className="fd-nav-brand">
-            <span className="fd-nav-title">AgriBridge</span>
-            <span className="fd-nav-badge">Farmer</span>
-            </div>
-            <div className="fd-nav-right">
-            <span className="fd-nav-name">👤 {user.fullName}</span>
-            <div style={{ position: 'relative', display: 'inline-block' }}>
-                <button className="fd-profile-btn" onClick={() => navigate('/my-orders')}>
-                    📋 My Sales
-                </button>
-                {pendingOrders > 0 && (
-                    <span className="fd-notif-badge" style={{ top: '-6px', right: '-6px' }}>
-                        {pendingOrders}
+            {/* NAV */}
+            <nav className="fd-nav">
+                <div className="fd-nav-brand">
+                    <span className="fd-nav-grain">🌾</span>
+                    <span className="fd-nav-title">AgriBridge</span>
+                    <span className="fd-nav-badge">Farmer</span>
+                </div>
+                <div className="fd-nav-right">
+                    <span className="fd-nav-name">
+                        <RiUserLine style={{ color: '#52B788', marginRight: '0.3rem', verticalAlign: 'middle' }} />
+                        {user.fullName}
                     </span>
-                )}
-                {unreadCount > 0 && (
-                    <span className="fd-msg-badge">
-                        {unreadCount}
-                    </span>
-                )}
-            </div>
-            <button className="fd-profile-btn" onClick={() => navigate('/profile')}>Profile</button>
-            <button className="fd-logout-btn" onClick={handleLogout}>Logout</button>
-            </div>
-        </nav>
-
-        <div className="fd-body">
-            {/* WELCOME */}
-            <div className="fd-welcome">
-            <h1>Welcome back, <span>{user.fullName}</span>! 🌾</h1>
-            <p>Here's an overview of your farm activity.</p>
-            </div>
-
-            {/* STATS */}
-            <div className="fd-stats">
-            <div className="fd-stat-card">
-                <div className="fd-stat-icon">📋</div>
-                <div className="fd-stat-info"><h3>{activeListings}</h3><p>Active Listings</p></div>
-            </div>
-            <div className="fd-stat-card">
-                <div className="fd-stat-icon">⏳</div>
-                <div className="fd-stat-info">
-                <h3>{pendingOrders}</h3>
-                <p>Pending Orders</p>
-                </div>
-            </div>
-            <div className="fd-stat-card">
-                <div className="fd-stat-icon">✅</div>
-                <div className="fd-stat-info">
-                <h3>{completedOrders}</h3>
-                <p>Completed Orders</p>
-                </div>
-            </div>
-            <div className="fd-stat-card">
-                <div className="fd-stat-icon">💰</div>
-                <div className="fd-stat-info">
-                <h3>₱{totalEarnings}</h3>
-                <p>Total Earnings</p>
-                </div>
-            </div>
-            </div>
-
-            {/* RECENT LISTINGS */}
-            <div className="fd-section">
-            <div className="fd-section-header">
-                <h2>My Recent Listings</h2>
-                <button className="fd-view-all-link" onClick={() => navigate('/my-listings')}>
-                View All →
-                </button>
-            </div>
-
-            {loadingListings ? (
-                <div className="fd-empty">Loading your listings...</div>
-            ) : listings.length === 0 ? (
-                <div className="fd-empty">
-                <span>🌱</span>
-                <p>You have no listings yet. Add your first produce!</p>
-                </div>
-            ) : (
-                <div className="fd-listings">
-                {listings.slice(0, 5).map((listing) => (
-                    <div className="fd-listing-card" key={listing.id}>
-                    {listing.photoBase64 ? (
-                        <img src={listing.photoBase64} alt={listing.produceName} className="fd-listing-photo" />
-                    ) : (
-                        <div className="fd-listing-photo-placeholder">🥬</div>
-                    )}
-                    <div className="fd-listing-info">
-                        <div className="fd-listing-top">
-                        <h3>{listing.produceName}</h3>
-                        <span className={`fd-status ${listing.status === 'AVAILABLE' ? 'status-available' : 'status-out'}`}>
-                            {listing.status === 'AVAILABLE' ? 'Available' : 'Out of Stock'}
-                        </span>
-                        </div>
-                        <p className="fd-listing-detail">
-                        📦 {listing.quantity} {listing.unit} &nbsp;•&nbsp;
-                        ₱{listing.price}/{listing.unit} &nbsp;•&nbsp;
-                        {getFreshnessLabel(listing.freshness)}
-                        </p>
-                        <p className="fd-listing-location">📍 {listing.pickupLocation}</p>
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <button className="fd-profile-btn" onClick={() => navigate('/my-orders')}>
+                            <IoReceiptOutline style={{ color: '#e67e22', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '1rem' }} />
+                            My Sales
+                        </button>
+                        {pendingOrders > 0 && (
+                            <span className="fd-notif-badge">{pendingOrders}</span>
+                        )}
+                        {unreadCount > 0 && (
+                            <span className="fd-msg-badge">{unreadCount}</span>
+                        )}
                     </div>
-                    </div>
-                ))}
-                </div>
-            )}
-            </div>
-
-            {/* ACTION BUTTONS */}
-            <div className="fd-actions">
-            <button className="fd-btn-primary" onClick={handleOpenModal}>
-                + Add New Listing
-            </button>
-            <button className="fd-btn-secondary" onClick={() => navigate('/my-listings')}>
-                View All Listings
-            </button>
-            </div>
-        </div>
-
-        {/* ADD LISTING MODAL */}
-        {showModal && (
-            <div className="modal-overlay" onClick={handleCloseModal}>
-            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                <h2>🌾 Add New Listing</h2>
-                <button className="modal-close" onClick={handleCloseModal}>✕</button>
-                </div>
-                <form onSubmit={handleSubmit} className="modal-form">
-                <div className="modal-photo-area">
-                    {photoPreview ? (
-                    <img src={photoPreview} alt="Preview" className="modal-photo-preview" />
-                    ) : (
-                    <div className="modal-photo-placeholder">
-                        <span>📷</span>
-                        <p>Upload a photo</p>
-                    </div>
-                    )}
-                    <input type="file" accept=".jpg,.png" onChange={handlePhotoChange}
-                    id="photo-upload" style={{ display: 'none' }} />
-                    <label htmlFor="photo-upload" className="modal-photo-btn">
-                    {photoPreview ? 'Change Photo' : 'Choose Photo'}
-                    </label>
-                </div>
-
-                <div className="modal-grid">
-                    <div className="modal-field full">
-                    <label>Produce Name *</label>
-                    <input type="text" placeholder="e.g. Fresh Tomatoes"
-                        value={produceName} onChange={(e) => setProduceName(e.target.value)} />
-                    </div>
-                    <div className="modal-field">
-                    <label>Category *</label>
-                    <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                        {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                    </div>
-                    <div className="modal-field">
-                    <label>Freshness *</label>
-                    <select value={freshness} onChange={(e) => setFreshness(e.target.value)}>
-                        {FRESHNESS_OPTIONS.map(f => (
-                        <option key={f.value} value={f.value}>{f.label}</option>
-                        ))}
-                    </select>
-                    </div>
-                    <div className="modal-field">
-                    <label>Quantity *</label>
-                    <input type="number" placeholder="e.g. 10" value={quantity}
-                        onChange={(e) => setQuantity(e.target.value)} min="0" />
-                    </div>
-                    <div className="modal-field">
-                    <label>Unit *</label>
-                    <select value={unit} onChange={(e) => setUnit(e.target.value)}>
-                        {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
-                    </select>
-                    </div>
-                    <div className="modal-field full">
-                    <label>Price (₱ per {unit}) *</label>
-                    <input type="number" placeholder="e.g. 40" value={price}
-                        onChange={(e) => setPrice(e.target.value)} min="0" />
-                    </div>
-                    <div className="modal-field full">
-                    <label>Pickup Location *</label>
-                    <input type="text" placeholder="e.g. Talisay Public Market, Cebu"
-                        value={pickupLocation} onChange={(e) => setPickupLocation(e.target.value)} />
-                    </div>
-                    <div className="modal-field full">
-                    <label>Additional Notes</label>
-                    <textarea placeholder="Any special instructions or details..."
-                        value={additionalNotes} onChange={(e) => setAdditionalNotes(e.target.value)} rows={3} />
-                    </div>
-                </div>
-
-                {submitMsg && (
-                    <div className={`modal-msg ${submitMsg.includes('✅') ? 'msg-success' : 'msg-error'}`}>
-                    {submitMsg}
-                    </div>
-                )}
-
-                <div className="modal-footer">
-                    <button type="button" className="fd-btn-secondary" onClick={handleCloseModal}>Cancel</button>
-                    <button type="submit" className="fd-btn-primary" disabled={submitting}>
-                    {submitting ? '⏳ Publishing...' : '🌾 Publish Listing'}
+                    <button className="fd-profile-btn" onClick={() => navigate('/profile')}>
+                        <FaUser style={{ color: '#3b82f6', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '0.85rem' }} />
+                        Profile
+                    </button>
+                    <button className="fd-logout-btn" onClick={handleLogout}>
+                        <FaSignOutAlt style={{ color: '#ef4444', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '0.85rem' }} />
+                        Logout
                     </button>
                 </div>
-                </form>
+            </nav>
+
+            <div className="fd-body">
+                {/* WELCOME */}
+                <div className="fd-welcome">
+                    <h1>Welcome back, <span>{user.fullName}</span>!</h1>
+                    <p>Here's an overview of your farm activity.</p>
+                </div>
+
+                {/* STATS */}
+                <div className="fd-stats">
+                    <div className="fd-stat-card">
+                        <div className="fd-stat-icon" style={{ background: '#dbeafe' }}>
+                            <MdListAlt style={{ color: '#2563eb', fontSize: '2rem' }} />
+                        </div>
+                        <div className="fd-stat-info">
+                            <h3>{activeListings}</h3>
+                            <p>Active Listings</p>
+                        </div>
+                    </div>
+                    <div className="fd-stat-card">
+                        <div className="fd-stat-icon" style={{ background: '#fef3c7' }}>
+                            <FaClock style={{ color: '#d97706', fontSize: '1.8rem' }} />
+                        </div>
+                        <div className="fd-stat-info">
+                            <h3>{pendingOrders}</h3>
+                            <p>Pending Orders</p>
+                        </div>
+                    </div>
+                    <div className="fd-stat-card">
+                        <div className="fd-stat-icon" style={{ background: '#dcfce7' }}>
+                            <MdCheckCircle style={{ color: '#16a34a', fontSize: '2rem' }} />
+                        </div>
+                        <div className="fd-stat-info">
+                            <h3>{completedOrders}</h3>
+                            <p>Completed Orders</p>
+                        </div>
+                    </div>
+                    <div className="fd-stat-card">
+                        <div className="fd-stat-icon" style={{ background: '#fef9c3' }}>
+                            <FaCoins style={{ color: '#ca8a04', fontSize: '1.8rem' }} />
+                        </div>
+                        <div className="fd-stat-info">
+                            <h3>₱{totalEarnings}</h3>
+                            <p>Total Earnings</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* RECENT LISTINGS */}
+                <div className="fd-section">
+                    <div className="fd-section-header">
+                        <h2>My Recent Listings</h2>
+                        <button className="fd-view-all-link" onClick={() => navigate('/my-listings')}>
+                            View All →
+                        </button>
+                    </div>
+
+                    {loadingListings ? (
+                        <div className="fd-empty">Loading your listings...</div>
+                    ) : listings.length === 0 ? (
+                        <div className="fd-empty">
+                            <FaSeedling style={{ fontSize: '2.5rem', color: '#52B788', display: 'block', margin: '0 auto 0.8rem' }} />
+                            <p>You have no listings yet. Add your first produce!</p>
+                        </div>
+                    ) : (
+                        <div className="fd-listings">
+                            {listings.slice(0, 5).map((listing) => (
+                                <div className="fd-listing-card" key={listing.id}>
+                                    {listing.photoBase64 ? (
+                                        <img src={listing.photoBase64} alt={listing.produceName} className="fd-listing-photo" />
+                                    ) : (
+                                        <div className="fd-listing-photo-placeholder">
+                                            <MdStorefront style={{ fontSize: '2rem', color: '#52B788' }} />
+                                        </div>
+                                    )}
+                                    <div className="fd-listing-info">
+                                        <div className="fd-listing-top">
+                                            <h3>{listing.produceName}</h3>
+                                            <span className={`fd-status ${listing.status === 'AVAILABLE' ? 'status-available' : 'status-out'}`}>
+                                                {listing.status === 'AVAILABLE' ? 'Available' : 'Out of Stock'}
+                                            </span>
+                                        </div>
+                                        <p className="fd-listing-detail">
+                                            📦 {listing.quantity} {listing.unit} &nbsp;•&nbsp;
+                                            ₱{listing.price}/{listing.unit} &nbsp;•&nbsp;
+                                            {getFreshnessLabel(listing.freshness)}
+                                        </p>
+                                        <p className="fd-listing-location">📍 {listing.pickupLocation}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* ACTION BUTTONS */}
+                <div className="fd-actions">
+                    <button className="fd-btn-primary" onClick={handleOpenModal}>
+                        + Add New Listing
+                    </button>
+                    <button className="fd-btn-secondary" onClick={() => navigate('/my-listings')}>
+                        View All Listings
+                    </button>
+                </div>
             </div>
-            </div>
-        )}
+
+            {/* ADD LISTING MODAL */}
+            {showModal && (
+                <div className="modal-overlay" onClick={handleCloseModal}>
+                    <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>
+                                <MdStorefront style={{ color: '#2D6A4F', marginRight: '0.5rem', verticalAlign: 'middle', fontSize: '1.4rem' }} />
+                                Add New Listing
+                            </h2>
+                            <button className="modal-close" onClick={handleCloseModal}>✕</button>
+                        </div>
+                        <form onSubmit={handleSubmit} className="modal-form">
+                            <div className="modal-photo-area">
+                                {photoPreview ? (
+                                    <img src={photoPreview} alt="Preview" className="modal-photo-preview" />
+                                ) : (
+                                    <div className="modal-photo-placeholder">
+                                        <FaCamera style={{ fontSize: '2.2rem', color: '#2D6A4F' }} />
+                                        <p>Upload a photo</p>
+                                    </div>
+                                )}
+                                <input type="file" accept=".jpg,.png" onChange={handlePhotoChange}
+                                    id="photo-upload" style={{ display: 'none' }} />
+                                <label htmlFor="photo-upload" className="modal-photo-btn">
+                                    {photoPreview ? 'Change Photo' : 'Choose Photo'}
+                                </label>
+                            </div>
+
+                            <div className="modal-grid">
+                                <div className="modal-field full">
+                                    <label>Produce Name *</label>
+                                    <input type="text" placeholder="e.g. Fresh Tomatoes"
+                                        value={produceName} onChange={(e) => setProduceName(e.target.value)} />
+                                </div>
+                                <div className="modal-field">
+                                    <label>Category *</label>
+                                    <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                                        {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                    </select>
+                                </div>
+                                <div className="modal-field">
+                                    <label>Freshness *</label>
+                                    <select value={freshness} onChange={(e) => setFreshness(e.target.value)}>
+                                        {FRESHNESS_OPTIONS.map(f => (
+                                            <option key={f.value} value={f.value}>{f.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="modal-field">
+                                    <label>Quantity *</label>
+                                    <input type="number" placeholder="e.g. 10" value={quantity}
+                                        onChange={(e) => setQuantity(e.target.value)} min="0" />
+                                </div>
+                                <div className="modal-field">
+                                    <label>Unit *</label>
+                                    <select value={unit} onChange={(e) => setUnit(e.target.value)}>
+                                        {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
+                                    </select>
+                                </div>
+                                <div className="modal-field full">
+                                    <label>Price (₱ per {unit}) *</label>
+                                    <input type="number" placeholder="e.g. 40" value={price}
+                                        onChange={(e) => setPrice(e.target.value)} min="0" />
+                                </div>
+                                <div className="modal-field full">
+                                    <label>Pickup Location *</label>
+                                    <input type="text" placeholder="e.g. Talisay Public Market, Cebu"
+                                        value={pickupLocation} onChange={(e) => setPickupLocation(e.target.value)} />
+                                </div>
+                                <div className="modal-field full">
+                                    <label>Additional Notes</label>
+                                    <textarea placeholder="Any special instructions or details..."
+                                        value={additionalNotes} onChange={(e) => setAdditionalNotes(e.target.value)} rows={3} />
+                                </div>
+                            </div>
+
+                            {submitMsg && (
+                                <div className={`modal-msg ${submitMsg === 'success' ? 'msg-success' : 'msg-error'}`}>
+                                    {submitMsg === 'success'
+                                        ? 'Listing created successfully!'
+                                        : submitMsg}
+                                </div>
+                            )}
+
+                            <div className="modal-footer">
+                                <button type="button" className="fd-btn-secondary" onClick={handleCloseModal}>Cancel</button>
+                                <button type="submit" className="fd-btn-primary" disabled={submitting}>
+                                    {submitting ? 'Publishing...' : 'Publish Listing'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
