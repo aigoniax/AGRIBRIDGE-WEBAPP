@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { getProfile, editProfile, editPassword, uploadPhoto } from '../api/auth';
 import './Profile.css';
 
+import { RiUserFill } from 'react-icons/ri';
+import { FaSignOutAlt } from 'react-icons/fa';
+import { MdDashboard } from 'react-icons/md';
+
 function Profile() {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
@@ -43,23 +47,14 @@ function Profile() {
         }
     }, [navigate]);
 
-    // Helper to go back to correct dashboard based on role
     const goToDashboard = () => {
         const stored = sessionStorage.getItem('user');
-        if (!stored) {
-            navigate('/login');
-            return;
-        }
+        if (!stored) { navigate('/login'); return; }
         const parsedUser = JSON.parse(stored);
-        if (parsedUser.role === 'FARMER') {
-            navigate('/farmer-dashboard');
-        } else if (parsedUser.role === 'BUYER') {
-            navigate('/buyer-dashboard');
-        } else if (parsedUser.role === 'ADMIN') {
-            navigate('/admin');
-        } else {
-            navigate('/login');
-        }
+        if (parsedUser.role === 'FARMER') navigate('/farmer-dashboard');
+        else if (parsedUser.role === 'BUYER') navigate('/buyer-dashboard');
+        else if (parsedUser.role === 'ADMIN') navigate('/admin');
+        else navigate('/login');
     };
 
     const handleLogout = () => {
@@ -116,23 +111,26 @@ function Profile() {
         <div className="profile-container">
             <nav className="profile-nav">
                 <div className="nav-brand">
-                    <span
-                        className="nav-title"
-                        onClick={goToDashboard}
-                        style={{ cursor: 'pointer' }}
-                    >
+                    <span className="nav-title" onClick={goToDashboard} style={{ cursor: 'pointer' }}>
                         AgriBridge
                     </span>
                 </div>
                 <div className="nav-user">
-                    <span className="nav-username">{user.fullName}</span>
-                    <button className="logout-btn" onClick={handleLogout}>Logout</button>
+                    <span className="nav-username">
+                        <RiUserFill style={{ color: '#52B788', marginRight: '0.3rem', verticalAlign: 'middle' }} />
+                        {user.fullName}
+                    </span>
+                    <button className="logout-btn" onClick={handleLogout}>
+                        <FaSignOutAlt style={{ color: '#ef4444', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '0.85rem' }} />
+                        Logout
+                    </button>
                 </div>
             </nav>
 
             <div className="profile-body">
                 <button className="back-btn" onClick={goToDashboard}>
-                    ← Back to Dashboard
+                    <MdDashboard style={{ color: '#2D6A4F', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '1rem' }} />
+                    Back to Dashboard
                 </button>
 
                 <div className="profile-card">
@@ -168,10 +166,7 @@ function Profile() {
                             <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Location" />
                             <div className="form-buttons">
                                 <button className="btn-green" onClick={handleEditProfile}>Save Changes</button>
-                                <button className="btn-outline" onClick={() => {
-                                    setEditMode(false);
-                                    setProfileMsg('');
-                                }}>Cancel</button>
+                                <button className="btn-outline" onClick={() => { setEditMode(false); setProfileMsg(''); }}>Cancel</button>
                             </div>
                             {profileMsg && (
                                 <p style={{
@@ -196,10 +191,7 @@ function Profile() {
 
                     {/* Password Section */}
                     <div className="password-area">
-                        <button className="btn-outline" onClick={() => {
-                            setShowPasswordForm(!showPasswordForm);
-                            setPasswordMsg('');
-                        }}>
+                        <button className="btn-outline" onClick={() => { setShowPasswordForm(!showPasswordForm); setPasswordMsg(''); }}>
                             {showPasswordForm ? 'Cancel' : 'Change Password'}
                         </button>
                         {passwordMsg && (
@@ -214,21 +206,11 @@ function Profile() {
                         )}
                         {showPasswordForm && (
                             <div className="edit-form">
-                                <input
-                                    type="password"
-                                    value={currentPassword}
-                                    onChange={e => setCurrentPassword(e.target.value)}
-                                    placeholder="Current Password"
-                                />
-                                <input
-                                    type="password"
-                                    value={newPassword}
-                                    onChange={e => setNewPassword(e.target.value)}
-                                    placeholder="New Password"
-                                />
-                                <button className="btn-green" onClick={handleEditPassword}>
-                                    Update Password
-                                </button>
+                                <input type="password" value={currentPassword}
+                                    onChange={e => setCurrentPassword(e.target.value)} placeholder="Current Password" />
+                                <input type="password" value={newPassword}
+                                    onChange={e => setNewPassword(e.target.value)} placeholder="New Password" />
+                                <button className="btn-green" onClick={handleEditPassword}>Update Password</button>
                             </div>
                         )}
                     </div>
