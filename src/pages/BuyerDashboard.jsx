@@ -85,7 +85,22 @@ function BuyerDashboard() {
         navigate('/login');
     };
 
-    const getFreshnessLabel = (freshness) => {
+    const getFreshnessLabel = (freshness, postedAt) => {
+        if (postedAt) {
+            const posted = new Date(postedAt);
+            const now = new Date();
+            const diffDays = Math.floor((now - posted) / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) {
+                if (freshness === 'TODAY') return '🟢 Harvested Today';
+                if (freshness === '1-2_DAYS') return '🟡 1-2 Days Old';
+                return '🔴 3+ Days Old';
+            } else if (diffDays === 1) {
+                return '🟡 1-2 Days Old';
+            } else {
+                return '🔴 3+ Days Old';
+            }
+        }
         if (freshness === 'TODAY') return '🟢 Harvested Today';
         if (freshness === '1-2_DAYS') return '🟡 1-2 Days Old';
         return '🔴 3+ Days Old';
@@ -182,7 +197,7 @@ function BuyerDashboard() {
                                     </div>
                                     <p className="bd-price">₱{listing.price}/{listing.unit}</p>
                                     <p className="bd-quantity">📦 {listing.quantity} {listing.unit} available</p>
-                                    <p className="bd-freshness">{getFreshnessLabel(listing.freshness)}</p>
+                                    <p className="bd-freshness">{getFreshnessLabel(listing.freshness, listing.postedAt)}</p>
                                     <p className="bd-location">📍 {listing.pickupLocation}</p>
                                     {listing.farmerName && (
                                         <p className="bd-farmer">🧑‍🌾 {listing.farmerName}</p>
