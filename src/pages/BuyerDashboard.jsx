@@ -6,7 +6,7 @@ import './BuyerDashboard.css';
 import { RiUserFill } from 'react-icons/ri';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { MdShoppingBag } from 'react-icons/md';
-import { IoSearch } from 'react-icons/io5';
+import { IoSearch, IoLocation } from 'react-icons/io5';
 import { GiWheat } from 'react-icons/gi';
 
 function BuyerDashboard() {
@@ -16,6 +16,7 @@ function BuyerDashboard() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('');
+    const [location, setLocation] = useState('');
     const [unreadCount, setUnreadCount] = useState(0);
     const pollRef = useRef(null);
 
@@ -106,6 +107,13 @@ function BuyerDashboard() {
         return '🔴 3+ Days Old';
     };
 
+    // Client-side location filter applied on top of fetched listings
+    const filteredListings = location.trim()
+        ? listings.filter(l =>
+            l.pickupLocation?.toLowerCase().includes(location.trim().toLowerCase())
+          )
+        : listings;
+
     if (!user) return null;
 
     return (
@@ -147,15 +155,35 @@ function BuyerDashboard() {
                     <p>Browse farm-fresh produce directly from local farmers.</p>
                 </div>
 
-                {/* SEARCH */}
-                <div className="bd-search-bar">
-                    <IoSearch style={{ color: '#52B788', fontSize: '1.2rem', flexShrink: 0 }} />
-                    <input
-                        type="text"
-                        placeholder="Search for produce (e.g. tomatoes, carrots...)"
-                        value={search}
-                        onChange={handleSearch}
-                    />
+                {/* SEARCH + LOCATION ROW */}
+                <div className="bd-search-row">
+                    <div className="bd-search-bar">
+                        <IoSearch style={{ color: '#52B788', fontSize: '1.2rem', flexShrink: 0 }} />
+                        <input
+                            type="text"
+                            placeholder="Search for produce (e.g. tomatoes, carrots...)"
+                            value={search}
+                            onChange={handleSearch}
+                        />
+                    </div>
+                    <div className="bd-location-bar">
+                        <IoLocation style={{ color: '#e67e22', fontSize: '1.2rem', flexShrink: 0 }} />
+                        <input
+                            type="text"
+                            placeholder="Filter by location (e.g. Cebu City)"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                        />
+                        {location && (
+                            <button
+                                className="bd-location-clear"
+                                onClick={() => setLocation('')}
+                                title="Clear location filter"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {/* CATEGORY FILTERS */}
@@ -174,14 +202,27 @@ function BuyerDashboard() {
                 {/* LISTINGS GRID */}
                 {loading ? (
                     <div className="bd-loading">Loading fresh produce...</div>
-                ) : listings.length === 0 ? (
+                ) : filteredListings.length === 0 ? (
                     <div className="bd-empty">
                         <span>🌾</span>
-                        <p>No produce available right now. Check back soon!</p>
+                        <p>
+                            {location
+                                ? `No produce found in "${location}". Try a different location.`
+                                : 'No produce available right now. Check back soon!'
+                            }
+                        </p>
+                        {location && (
+                            <button
+                                className="bd-clear-location-btn"
+                                onClick={() => setLocation('')}
+                            >
+                                Clear Location Filter
+                            </button>
+                        )}
                     </div>
                 ) : (
                     <div className="bd-listings-grid">
-                        {listings.map((listing) => (
+                        {filteredListings.map((listing) => (
                             <div className="bd-listing-card" key={listing.id}>
                                 <div className="bd-listing-img">
                                     {listing.photoBase64 ? (
