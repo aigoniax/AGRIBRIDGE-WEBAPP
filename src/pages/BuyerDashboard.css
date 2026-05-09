@@ -55,6 +55,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); }
 .bd-nav-name {
     font-size: 0.9rem;
     color: #555;
+    display: flex;
+    align-items: center;
 }
 
 .bd-orders-btn, .bd-profile-btn, .bd-logout-btn {

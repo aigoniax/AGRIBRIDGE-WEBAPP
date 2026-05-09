@@ -3,6 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { getAllListings, getUnreadCount } from '../api/auth';
 import './BuyerDashboard.css';
 
+import { RiUserFill } from 'react-icons/ri';
+import { FaSignOutAlt } from 'react-icons/fa';
+import { MdShoppingBag } from 'react-icons/md';
+import { IoSearch } from 'react-icons/io5';
+import { GiWheat } from 'react-icons/gi';
+
 function BuyerDashboard() {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
@@ -31,7 +37,6 @@ function BuyerDashboard() {
         fetchListings('', '');
         fetchUnreadCount(token);
 
-        // Poll unread count every 10 seconds
         pollRef.current = setInterval(() => {
             fetchUnreadCount(sessionStorage.getItem('token'));
         }, 10000);
@@ -42,15 +47,15 @@ function BuyerDashboard() {
     const fetchListings = async (searchTerm, categoryFilter) => {
         setLoading(true);
         try {
-        const data = await getAllListings(
-            searchTerm,
-            categoryFilter === 'All' ? '' : categoryFilter
-        );
-        if (data.success) setListings(data.data || []);
+            const data = await getAllListings(
+                searchTerm,
+                categoryFilter === 'All' ? '' : categoryFilter
+            );
+            if (data.success) setListings(data.data || []);
         } catch (err) {
-        console.error('Failed to fetch listings', err);
+            console.error('Failed to fetch listings', err);
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     };
 
@@ -90,99 +95,110 @@ function BuyerDashboard() {
 
     return (
         <div className="bd-container">
-        {/* NAV */}
-        <nav className="bd-nav">
-            <div className="bd-nav-brand">
-            <span className="bd-nav-title">AgriBridge</span>
-            <span className="bd-nav-badge">Buyer</span>
-            </div>
-            <div className="bd-nav-right">
-            <span className="bd-nav-name">👤 {user.fullName}</span>
-            <button className="bd-orders-btn" onClick={() => navigate('/my-orders')}>
-                📦 My Orders
-                {unreadCount > 0 && (
-                    <span className="bd-msg-badge">{unreadCount}</span>
-                )}
-            </button>
-            <button className="bd-profile-btn" onClick={() => navigate('/profile')}>Profile</button>
-            <button className="bd-logout-btn" onClick={handleLogout}>Logout</button>
-            </div>
-        </nav>
-
-        <div className="bd-body">
-            {/* HEADER */}
-            <div className="bd-welcome">
-            <h1>Fresh Produce Near You 🥦</h1>
-            <p>Browse farm-fresh produce directly from local farmers.</p>
-            </div>
-
-            {/* SEARCH */}
-            <div className="bd-search-bar">
-            <span className="bd-search-icon">🔍</span>
-            <input
-                type="text"
-                placeholder="Search for produce (e.g. tomatoes, carrots...)"
-                value={search}
-                onChange={handleSearch}
-            />
-            </div>
-
-            {/* CATEGORY FILTERS */}
-            <div className="bd-categories">
-            {categories.map((cat) => (
-                <button
-                key={cat}
-                className={`bd-cat-btn ${category === cat || (cat === 'All' && !category) ? 'active' : ''}`}
-                onClick={() => handleCategory(cat === 'All' ? '' : cat)}
-                >
-                {cat}
-                </button>
-            ))}
-            </div>
-
-            {/* LISTINGS GRID */}
-            {loading ? (
-            <div className="bd-loading">Loading fresh produce...</div>
-            ) : listings.length === 0 ? (
-            <div className="bd-empty">
-                <span>🌾</span>
-                <p>No produce available right now. Check back soon!</p>
-            </div>
-            ) : (
-            <div className="bd-listings-grid">
-                {listings.map((listing) => (
-                <div className="bd-listing-card" key={listing.id}>
-                    <div className="bd-listing-img">
-                    {listing.photoBase64 ? (
-                        <img src={listing.photoBase64} alt={listing.produceName} />
-                    ) : (
-                        <div className="bd-listing-img-placeholder">🥬</div>
-                    )}
-                    </div>
-                    <div className="bd-listing-info">
-                    <div className="bd-listing-top">
-                        <h3>{listing.produceName}</h3>
-                        <span className="bd-category-tag">{listing.category}</span>
-                    </div>
-                    <p className="bd-price">₱{listing.price}/{listing.unit}</p>
-                    <p className="bd-quantity">📦 {listing.quantity} {listing.unit} available</p>
-                    <p className="bd-freshness">{getFreshnessLabel(listing.freshness)}</p>
-                    <p className="bd-location">📍 {listing.pickupLocation}</p>
-                    {listing.farmerName && (
-                        <p className="bd-farmer">🧑‍🌾 {listing.farmerName}</p>
-                    )}
-                    <button
-                        className="bd-order-btn"
-                        onClick={() => navigate(`/listing/${listing.id}`)}
-                    >
-                        View Details
-                    </button>
-                    </div>
+            {/* NAV */}
+            <nav className="bd-nav">
+                <div className="bd-nav-brand">
+                    <span className="bd-nav-title">AgriBridge</span>
+                    <span className="bd-nav-badge">Buyer</span>
                 </div>
-                ))}
+                <div className="bd-nav-right">
+                    <span className="bd-nav-name">
+                        <RiUserFill style={{ color: '#52B788', marginRight: '0.3rem', verticalAlign: 'middle' }} />
+                        {user.fullName}
+                    </span>
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <button className="bd-orders-btn" onClick={() => navigate('/my-orders')}>
+                            <MdShoppingBag style={{ color: '#ffffff', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '1rem' }} />
+                            My Orders
+                        </button>
+                        {unreadCount > 0 && (
+                            <span className="bd-msg-badge">{unreadCount}</span>
+                        )}
+                    </div>
+                    <button className="bd-profile-btn" onClick={() => navigate('/profile')}>
+                        Profile
+                    </button>
+                    <button className="bd-logout-btn" onClick={handleLogout}>
+                        <FaSignOutAlt style={{ color: '#ef4444', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '0.85rem' }} />
+                        Logout
+                    </button>
+                </div>
+            </nav>
+
+            <div className="bd-body">
+                {/* HEADER */}
+                <div className="bd-welcome">
+                    <h1>Fresh Produce Near You <GiWheat style={{ color: '#52B788', verticalAlign: 'middle', fontSize: '1.8rem' }} /></h1>
+                    <p>Browse farm-fresh produce directly from local farmers.</p>
+                </div>
+
+                {/* SEARCH */}
+                <div className="bd-search-bar">
+                    <IoSearch style={{ color: '#52B788', fontSize: '1.2rem', flexShrink: 0 }} />
+                    <input
+                        type="text"
+                        placeholder="Search for produce (e.g. tomatoes, carrots...)"
+                        value={search}
+                        onChange={handleSearch}
+                    />
+                </div>
+
+                {/* CATEGORY FILTERS */}
+                <div className="bd-categories">
+                    {categories.map((cat) => (
+                        <button
+                            key={cat}
+                            className={`bd-cat-btn ${category === cat || (cat === 'All' && !category) ? 'active' : ''}`}
+                            onClick={() => handleCategory(cat === 'All' ? '' : cat)}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+
+                {/* LISTINGS GRID */}
+                {loading ? (
+                    <div className="bd-loading">Loading fresh produce...</div>
+                ) : listings.length === 0 ? (
+                    <div className="bd-empty">
+                        <span>🌾</span>
+                        <p>No produce available right now. Check back soon!</p>
+                    </div>
+                ) : (
+                    <div className="bd-listings-grid">
+                        {listings.map((listing) => (
+                            <div className="bd-listing-card" key={listing.id}>
+                                <div className="bd-listing-img">
+                                    {listing.photoBase64 ? (
+                                        <img src={listing.photoBase64} alt={listing.produceName} />
+                                    ) : (
+                                        <div className="bd-listing-img-placeholder">🥬</div>
+                                    )}
+                                </div>
+                                <div className="bd-listing-info">
+                                    <div className="bd-listing-top">
+                                        <h3>{listing.produceName}</h3>
+                                        <span className="bd-category-tag">{listing.category}</span>
+                                    </div>
+                                    <p className="bd-price">₱{listing.price}/{listing.unit}</p>
+                                    <p className="bd-quantity">📦 {listing.quantity} {listing.unit} available</p>
+                                    <p className="bd-freshness">{getFreshnessLabel(listing.freshness)}</p>
+                                    <p className="bd-location">📍 {listing.pickupLocation}</p>
+                                    {listing.farmerName && (
+                                        <p className="bd-farmer">🧑‍🌾 {listing.farmerName}</p>
+                                    )}
+                                    <button
+                                        className="bd-order-btn"
+                                        onClick={() => navigate(`/listing/${listing.id}`)}
+                                    >
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
-            )}
-        </div>
         </div>
     );
 }
