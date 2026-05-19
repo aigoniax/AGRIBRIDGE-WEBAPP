@@ -16,14 +16,12 @@ const FRESHNESS_OPTIONS = [
 ];
 const UNITS = ['kg', 'pieces', 'bundle', 'sack', 'liter'];
 
-/* ── helpers ─────────────────────────────────────────────── */
 const getFreshnessLabel = (f) => {
     if (f === 'TODAY')    return { text: 'Harvested Today', cls: 'tag-today' };
     if (f === '1-2_DAYS') return { text: '1–2 Days Old',   cls: 'tag-1-2days' };
     return                       { text: '3+ Days Old',    cls: 'tag-3plus' };
 };
 
-/* ── sub-components ──────────────────────────────────────── */
 function StatCard({ iconBg, icon, value, label }) {
     return (
         <div className="fd-stat-card">
@@ -83,7 +81,7 @@ function ProduceCard({ listing }) {
     );
 }
 
-/* ── main component ──────────────────────────────────────── */
+/* main component */
 function FarmerDashboard() {
     const navigate = useNavigate();
     const [user, setUser]                   = useState(null);
@@ -213,7 +211,7 @@ function FarmerDashboard() {
     return (
         <div className="fd-container">
 
-            {/* ── NAV ─────────────────────────────────────────── */}
+            {/* NAV */}
             <nav className="fd-nav">
                 <div className="fd-nav-brand">
                     <span className="fd-nav-grain">🌾</span>
@@ -248,7 +246,7 @@ function FarmerDashboard() {
                 </div>
             </nav>
 
-            {/* ── BODY ────────────────────────────────────────── */}
+            {/* BODY */}
             <div className="fd-body">
 
                 {/* WELCOME */}
@@ -324,7 +322,7 @@ function FarmerDashboard() {
                 </div>
             </div>
 
-            {/* ── ADD LISTING MODAL ────────────────────────────── */}
+            {/* ADD LISTING MODAL */}
             {showModal && (
                 <div className="modal-overlay" onClick={handleCloseModal}>
                     <div className="modal-box" onClick={(e) => e.stopPropagation()}>

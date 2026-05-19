@@ -35,7 +35,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* ─── NAV ─────────────────────────────────────────── */
+/* NAV */
 .fd-nav {
     background: var(--white);
     border-bottom: 1px solid var(--gray-100);
@@ -129,7 +129,7 @@ body {
 }
 .fd-nav-btn-logout:hover { background: #fecaca; }
 
-/* ─── NOTIFICATION BADGES ──────────────────────────── */
+/* NOTIFICATION BADGES */
 .fd-notif-badge {
     position: absolute;
     top: -5px; right: -5px;
@@ -154,14 +154,14 @@ body {
     display: flex; align-items: center; justify-content: center;
 }
 
-/* ─── BODY ─────────────────────────────────────────── */
+/* BODY */
 .fd-body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2.5rem 1.5rem 4rem;
 }
 
-/* ─── WELCOME ──────────────────────────────────────── */
+/* WELCOME */
 .fd-welcome {
     margin-bottom: 2.5rem;
     animation: fadeUp 0.5s ease both;
@@ -184,7 +184,7 @@ body {
     font-weight: 400;
 }
 
-/* ─── STATS GRID ───────────────────────────────────── */
+/* STATS GRID */
 .fd-stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -195,12 +195,14 @@ body {
 .fd-stat-card {
     background: var(--white);
     border-radius: 20px;
-    padding: 1.5rem;
+    padding: 1.25rem 1.5rem;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.04);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     animation: fadeUp 0.5s ease both;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
 }
 
 .fd-stat-card:hover {
@@ -214,19 +216,23 @@ body {
 .fd-stat-card:nth-child(4) { animation-delay: 0.2s; }
 
 .fd-stat-icon-wrap {
-    width: fit-content;
-    padding: 0.75rem;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
     border-radius: 14px;
     font-size: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1rem;
+}
+
+.fd-stat-info {
+    min-width: 0;
 }
 
 .fd-stat-info h3 {
     font-family: 'Fraunces', serif;
-    font-size: 2rem;
+    font-size: 1.75rem;
     color: var(--gray-900);
     font-weight: 700;
     line-height: 1;
@@ -237,11 +243,12 @@ body {
     font-size: 0.8rem;
     color: var(--gray-400);
     font-weight: 500;
-    margin-top: 0.35rem;
+    margin-top: 0.25rem;
     letter-spacing: 0.01em;
+    white-space: nowrap;
 }
 
-/* ─── SECTION ──────────────────────────────────────── */
+/* SECTION */
 .fd-section {
     background: var(--white);
     border-radius: 20px;
@@ -281,14 +288,14 @@ body {
 }
 .fd-view-all-link:hover { color: var(--emerald-700); }
 
-/* ─── LISTINGS GRID ────────────────────────────────── */
+/* LISTINGS GRID */
 .fd-listings-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.25rem;
 }
 
-/* ─── PRODUCE CARD ─────────────────────────────────── */
+/* PRODUCE CARD */
 .fd-produce-card {
     background: var(--white);
     border-radius: 18px;
@@ -411,7 +418,7 @@ body {
     border-top: 1px solid var(--gray-100);
 }
 
-/* ─── EMPTY ────────────────────────────────────────── */
+/* EMPTY */
 .fd-empty {
     text-align: center;
     padding: 3.5rem 2rem;
@@ -429,7 +436,7 @@ body {
     color: var(--gray-400);
 }
 
-/* ─── ACTION BUTTONS ───────────────────────────────── */
+/* ACTION BUTTONS */
 .fd-actions {
     display: flex;
     gap: 1rem;
@@ -482,7 +489,7 @@ body {
     transform: translateY(-1px);
 }
 
-/* ─── MODAL ────────────────────────────────────────── */
+/* MODAL */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -671,13 +678,13 @@ body {
     border-top: 1px solid var(--gray-100);
 }
 
-/* ─── ANIMATIONS ───────────────────────────────────── */
+/* ANIMATIONS */
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── RESPONSIVE ───────────────────────────────────── */
+/* RESPONSIVE */
 @media (max-width: 1024px) {
     .fd-stats { grid-template-columns: repeat(2, 1fr); }
     .fd-listings-grid { grid-template-columns: repeat(2, 1fr); }
