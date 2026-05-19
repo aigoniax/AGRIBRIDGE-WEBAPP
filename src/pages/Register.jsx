@@ -35,12 +35,10 @@ function Register() {
       setError('Please fill in all fields.');
       return;
     }
-
     if (!allRulesPassed) {
       setError('Password does not meet the requirements.');
       return;
     }
-
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
@@ -61,7 +59,7 @@ function Register() {
         setError(data.message);
       }
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
+      if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
         setError('Server error. Please try again.');
@@ -73,126 +71,87 @@ function Register() {
 
   return (
     <div className="auth-container">
-      <div className="auth-left">
-        <div className="auth-brand">
-          <h1 className="brand-name">AgriBridge</h1>
-          <p className="brand-tagline">Connecting farmers to a smarter future</p>
-        </div>
+      {/* BRANDING */}
+      <div className="auth-brand">
+        <h1 className="brand-name">AgriBridge</h1>
+        <p className="brand-tagline">Connecting farmers to a smarter future</p>
       </div>
 
-      <div className="auth-right">
-        <div className="auth-card auth-card-register">
-          <div className="auth-header">
-            <h2>Create Account</h2>
-            <p>Join AgriBridge today</p>
+      {/* CARD */}
+      <div className="auth-card auth-card-register">
+        <div className="auth-header">
+          <h2>Create Account</h2>
+          <p>Join AgriBridge today</p>
+        </div>
+
+        <form onSubmit={handleRegister} className="auth-form">
+          <div className="role-selector">
+            <button type="button" className={`role-btn ${role === 'FARMER' ? 'active' : ''}`} onClick={() => setRole('FARMER')}>
+              🌾 I'm a Farmer
+            </button>
+            <button type="button" className={`role-btn ${role === 'BUYER' ? 'active' : ''}`} onClick={() => setRole('BUYER')}>
+              🛒 I'm a Buyer
+            </button>
           </div>
 
-          <form onSubmit={handleRegister} className="auth-form">
-            <div className="role-selector">
-              <button type="button" className={`role-btn ${role === 'FARMER' ? 'active' : ''}`} onClick={() => setRole('FARMER')}>
-                🌾 I'm a Farmer
-              </button>
-              <button type="button" className={`role-btn ${role === 'BUYER' ? 'active' : ''}`} onClick={() => setRole('BUYER')}>
-                🛒 I'm a Buyer
-              </button>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label>First Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter first name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </div>
-              <div className="form-group">
-                <label>Last Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter last name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </div>
-            </div>
-
+          <div className="form-row">
             <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <label>First Name</label>
+              <input type="text" placeholder="Enter first name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
             </div>
-
-            {/* Password — hints always rendered but hidden until typing */}
             <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
-                placeholder="Create a password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <div className={`password-hints ${password.length > 0 ? 'hints-visible' : 'hints-hidden'}`}>
-                {passwordRules.map((rule) => (
-                  <div key={rule.label} className={`hint-item ${rule.test(password) ? 'hint-pass' : 'hint-fail'}`}>
-                    {rule.test(password) ? '✅' : '❌'} {rule.label}
-                  </div>
-                ))}
-              </div>
+              <label>Last Name</label>
+              <input type="text" placeholder="Enter last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
             </div>
+          </div>
 
-            {/* Confirm Password — match indicator always rendered but hidden until typing */}
+          <div className="form-group">
+            <label>Email</label>
+            <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+
+          <div className="form-group">
+            <label>Password</label>
+            <input type="password" placeholder="Create a password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <div className={`password-hints ${password.length > 0 ? 'hints-visible' : 'hints-hidden'}`}>
+              {passwordRules.map((rule) => (
+                <div key={rule.label} className={`hint-item ${rule.test(password) ? 'hint-pass' : 'hint-fail'}`}>
+                  {rule.test(password) ? '✅' : '❌'} {rule.label}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Confirm Password</label>
+            <input type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            <div className={`hint-item ${confirmPassword.length > 0 ? (password === confirmPassword ? 'hint-pass' : 'hint-fail') : 'hints-hidden'}`}>
+              {password === confirmPassword ? '✅ Passwords match' : '❌ Passwords do not match'}
+            </div>
+          </div>
+
+          <div className="form-row">
             <div className="form-group">
-              <label>Confirm Password</label>
-              <input
-                type="password"
-                placeholder="Confirm your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-              <div className={`hint-item ${confirmPassword.length > 0 ? (password === confirmPassword ? 'hint-pass' : 'hint-fail') : 'hints-hidden'}`}>
-                {password === confirmPassword ? '✅ Passwords match' : '❌ Passwords do not match'}
-              </div>
+              <label>Phone</label>
+              <input type="text" placeholder="Your phone number" value={phone} onChange={(e) => setPhone(e.target.value)} />
             </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label>Phone</label>
-                <input
-                  type="text"
-                  placeholder="Your phone number"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
-              <div className="form-group">
-                <label>Location</label>
-                <input
-                  type="text"
-                  placeholder="Your city / province"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                />
-              </div>
+            <div className="form-group">
+              <label>Location</label>
+              <input type="text" placeholder="Your city / province" value={location} onChange={(e) => setLocation(e.target.value)} />
             </div>
+          </div>
 
-            {error && <div className="error-message">⚠ {error}</div>}
-            {successMsg && <div className="success-message">✅ {successMsg}</div>}
+          {error && <div className="error-message">⚠ {error}</div>}
+          {successMsg && <div className="success-message">✅ {successMsg}</div>}
 
-            <button type="submit" className="auth-btn" disabled={loading || !!successMsg}>
-              {loading ? 'Creating account...' : 'Create Account'}
-            </button>
-          </form>
+          <button type="submit" className="auth-btn" disabled={loading || !!successMsg}>
+            {loading ? 'Creating account...' : 'Create Account'}
+          </button>
+        </form>
 
-          <p className="auth-switch">
-            Already have an account? <Link to="/login">Sign in here</Link>
-          </p>
-        </div>
+        <p className="auth-switch">
+          Already have an account? <Link to="/login">Sign in here</Link>
+        </p>
       </div>
     </div>
   );

@@ -26,21 +26,15 @@ function Login() {
         sessionStorage.setItem('user', JSON.stringify(data));
         sessionStorage.setItem('token', data.token);
 
-        // Redirect based on role
-        if (data.role === 'ADMIN') {
-          navigate('/admin');
-        } else if (data.role === 'FARMER') {
-          navigate('/farmer-dashboard');
-        } else if (data.role === 'BUYER') {
-          navigate('/buyer-dashboard');
-        } else {
-          navigate('/dashboard');
-        }
+        if (data.role === 'ADMIN') navigate('/admin');
+        else if (data.role === 'FARMER') navigate('/farmer-dashboard');
+        else if (data.role === 'BUYER') navigate('/buyer-dashboard');
+        else navigate('/dashboard');
       } else {
         setError(data.message);
       }
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
+      if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
         setError('Server error. Please try again.');
@@ -52,57 +46,50 @@ function Login() {
 
   return (
     <div className="auth-container">
-      <div className="auth-left">
-        <div className="auth-brand">
-          <h1 className="brand-name">AgriBridge</h1>
-          <p className="brand-tagline">Connecting farmers to a smarter future</p>
-        </div>
-        <div className="auth-decoration">
-          <div className="deco-circle deco-1"></div>
-          <div className="deco-circle deco-2"></div>
-          <div className="deco-circle deco-3"></div>
-        </div>
+      {/* BRANDING */}
+      <div className="auth-brand">
+        <h1 className="brand-name">AgriBridge</h1>
+        <p className="brand-tagline">Connecting farmers to a smarter future</p>
       </div>
 
-      <div className="auth-right">
-        <div className="auth-card">
-          <div className="auth-header">
-            <h2>Welcome back</h2>
-            <p>Sign in to your AgriBridge account</p>
+      {/* CARD */}
+      <div className="auth-card">
+        <div className="auth-header">
+          <h2>Welcome back</h2>
+          <p>Sign in to your AgriBridge account</p>
+        </div>
+
+        <form onSubmit={handleLogin} className="auth-form">
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
 
-          <form onSubmit={handleLogin} className="auth-form">
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-            <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+          {error && <div className="error-message">⚠ {error}</div>}
 
-            {error && <div className="error-message">⚠ {error}</div>}
+          <button type="submit" className="auth-btn" disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
 
-            <button type="submit" className="auth-btn" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign In'}
-            </button>
-          </form>
-
-          <p className="auth-switch">
-            Don't have an account? <Link to="/register">Register here</Link>
-          </p>
-        </div>
+        <p className="auth-switch">
+          Don't have an account? <Link to="/register">Register here</Link>
+        </p>
       </div>
     </div>
   );
