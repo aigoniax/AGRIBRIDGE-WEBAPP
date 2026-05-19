@@ -4,16 +4,23 @@ import { getMyListings, updateListing, deleteListing } from '../api/auth';
 import './MyListings.css';
 
 import { RiUserFill } from 'react-icons/ri';
-import { FaSignOutAlt, FaEdit, FaTrashAlt, FaClipboardList } from 'react-icons/fa';
+import { FaSignOutAlt, FaEdit, FaTrashAlt, FaCamera, FaSeedling, FaMapMarkerAlt } from 'react-icons/fa';
 import { MdDashboard } from 'react-icons/md';
+import { FaClipboardList } from 'react-icons/fa';
 
 const CATEGORIES = ['Vegetables', 'Fruits', 'Grains', 'Herbs', 'Others'];
 const FRESHNESS_OPTIONS = [
-    { value: 'TODAY', label: '🟢 Harvested Today' },
-    { value: '1-2_DAYS', label: '🟡 1-2 Days Old' },
-    { value: '3+_DAYS', label: '🔴 3+ Days Old' },
+    { value: 'TODAY',    label: '🟢 Harvested Today' },
+    { value: '1-2_DAYS', label: '🟡 1–2 Days Old' },
+    { value: '3+_DAYS',  label: '🔴 3+ Days Old' },
 ];
 const UNITS = ['kg', 'pieces', 'bundle', 'sack', 'liter'];
+
+const getFreshnessTag = (f) => {
+    if (f === 'TODAY')    return { text: 'Harvested Today', cls: 'tag-today' };
+    if (f === '1-2_DAYS') return { text: '1–2 Days Old',   cls: 'tag-1-2days' };
+    return                       { text: '3+ Days Old',    cls: 'tag-3plus' };
+};
 
 function MyListings() {
     const navigate = useNavigate();
@@ -56,11 +63,8 @@ function MyListings() {
         try {
             const data = await getMyListings(token);
             if (data.success) setListings(data.data || []);
-        } catch (err) {
-            console.error('Failed to fetch listings', err);
-        } finally {
-            setLoading(false);
-        }
+        } catch (err) { console.error('Failed to fetch listings', err); }
+        finally { setLoading(false); }
     };
 
     const handleOpenEdit = (listing) => {
@@ -89,10 +93,7 @@ function MyListings() {
 
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            setPhotoFile(file);
-            setPhotoPreview(URL.createObjectURL(file));
-        }
+        if (file) { setPhotoFile(file); setPhotoPreview(URL.createObjectURL(file)); }
     };
 
     const handleEditSubmit = async (e) => {
@@ -126,15 +127,8 @@ function MyListings() {
         }
     };
 
-    const handleOpenDelete = (listing) => {
-        setDeletingListing(listing);
-        setShowDeleteModal(true);
-    };
-
-    const handleCloseDelete = () => {
-        setShowDeleteModal(false);
-        setDeletingListing(null);
-    };
+    const handleOpenDelete = (listing) => { setDeletingListing(listing); setShowDeleteModal(true); };
+    const handleCloseDelete = () => { setShowDeleteModal(false); setDeletingListing(null); };
 
     const handleConfirmDelete = async () => {
         setDeleting(true);
@@ -143,11 +137,8 @@ function MyListings() {
             await deleteListing(token, deletingListing.id);
             fetchListings(token);
             handleCloseDelete();
-        } catch (err) {
-            console.error('Failed to delete listing', err);
-        } finally {
-            setDeleting(false);
-        }
+        } catch (err) { console.error('Failed to delete listing', err); }
+        finally { setDeleting(false); }
     };
 
     const handleLogout = () => {
@@ -156,52 +147,53 @@ function MyListings() {
         navigate('/login');
     };
 
-    const getFreshnessLabel = (f) => {
-        if (f === 'TODAY') return '🟢 Harvested Today';
-        if (f === '1-2_DAYS') return '🟡 1-2 Days Old';
-        return '🔴 3+ Days Old';
-    };
-
     if (!user) return null;
 
     return (
         <div className="ml-container">
+
             {/* NAV */}
             <nav className="ml-nav">
                 <div className="ml-nav-brand">
+                    <span className="ml-nav-grain">🌾</span>
                     <span className="ml-nav-title">AgriBridge</span>
                     <span className="ml-nav-badge">Farmer</span>
                 </div>
                 <div className="ml-nav-right">
                     <span className="ml-nav-name">
-                        <RiUserFill style={{ color: '#52B788', marginRight: '0.3rem', verticalAlign: 'middle' }} />
+                        <RiUserFill style={{ color: '#10b981', fontSize: '0.9rem' }} />
                         {user.fullName}
                     </span>
-                    <button className="ml-back-btn" onClick={() => navigate('/farmer-dashboard')}>
-                        <MdDashboard style={{ color: '#2D6A4F', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '1rem' }} />
+                    <button className="ml-nav-btn ml-nav-btn-dashboard" onClick={() => navigate('/farmer-dashboard')}>
+                        <MdDashboard style={{ fontSize: '0.95rem' }} />
                         Dashboard
                     </button>
-                    <button className="ml-logout-btn" onClick={handleLogout}>
-                        <FaSignOutAlt style={{ color: '#ef4444', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '0.85rem' }} />
+                    <button className="ml-nav-btn ml-nav-btn-logout" onClick={handleLogout}>
+                        <FaSignOutAlt style={{ fontSize: '0.8rem' }} />
                         Logout
                     </button>
                 </div>
             </nav>
 
+            {/* BODY */}
             <div className="ml-body">
-                <div className="ml-header">
+
+                <div className="ml-welcome">
                     <h1>
-                        <FaClipboardList style={{ color: '#2563eb', marginRight: '0.5rem', verticalAlign: 'middle', fontSize: '1.8rem' }} />
+                        <FaClipboardList style={{ color: '#2563eb', fontSize: '1.6rem' }} />
                         My Listings
                     </h1>
                     <p>Manage all your produce listings here.</p>
                 </div>
 
                 {loading ? (
-                    <div className="ml-empty">Loading your listings...</div>
+                    <div className="ml-empty">
+                        <span style={{ fontSize: '2.5rem' }}>⏳</span>
+                        <p>Loading your listings…</p>
+                    </div>
                 ) : listings.length === 0 ? (
                     <div className="ml-empty">
-                        <span>🌱</span>
+                        <FaSeedling style={{ fontSize: '2.5rem', color: '#10b981' }} />
                         <p>You have no listings yet.</p>
                         <button className="ml-btn-primary" onClick={() => navigate('/farmer-dashboard')}>
                             + Add Your First Listing
@@ -209,57 +201,60 @@ function MyListings() {
                     </div>
                 ) : (
                     <div className="ml-grid">
-                        {listings.map((listing) => (
-                            <div className="ml-card" key={listing.id}>
-                                <div className="ml-card-img">
-                                    {listing.photoBase64 ? (
-                                        <img src={listing.photoBase64} alt={listing.produceName} />
-                                    ) : (
-                                        <div className="ml-card-img-placeholder">🥬</div>
-                                    )}
-                                </div>
-
-                                <div className="ml-card-info">
-                                    <div className="ml-card-top">
-                                        <h3>{listing.produceName}</h3>
-                                        <span className={`ml-status ${listing.status === 'AVAILABLE' ? 'status-available' : 'status-out'}`}>
-                                            {listing.status === 'AVAILABLE' ? 'Available' : 'Out of Stock'}
+                        {listings.map((listing) => {
+                            const freshnessTag = getFreshnessTag(listing.freshness);
+                            const isAvailable  = listing.status === 'AVAILABLE';
+                            return (
+                                <div className="ml-card" key={listing.id}>
+                                    <div className="ml-card-img-wrap">
+                                        {listing.photoBase64 ? (
+                                            <img src={listing.photoBase64} alt={listing.produceName} className="ml-card-img" />
+                                        ) : (
+                                            <div className="ml-card-img-placeholder">🌿</div>
+                                        )}
+                                        <span className={`ml-status-badge ${isAvailable ? 'tag-available' : 'tag-out'}`}>
+                                            {isAvailable ? 'Available' : 'Out of Stock'}
                                         </span>
                                     </div>
-                                    <p className="ml-category">🏷 {listing.category}</p>
-                                    <p className="ml-detail">
-                                        📦 {listing.quantity} {listing.unit} &nbsp;•&nbsp; ₱{listing.price}/{listing.unit}
-                                    </p>
-                                    <p className="ml-freshness">{getFreshnessLabel(listing.freshness)}</p>
-                                    <p className="ml-location">📍 {listing.pickupLocation}</p>
-                                    {listing.additionalNotes && (
-                                        <p className="ml-notes">📝 {listing.additionalNotes}</p>
-                                    )}
-                                </div>
 
-                                <div className="ml-card-actions">
-                                    <button className="ml-edit-btn" onClick={() => handleOpenEdit(listing)}>
-                                        <FaEdit style={{ color: '#1B4332', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '0.85rem' }} />
-                                        Edit
-                                    </button>
-                                    <button className="ml-delete-btn" onClick={() => handleOpenDelete(listing)}>
-                                        <FaTrashAlt style={{ color: '#7F1D1D', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '0.85rem' }} />
-                                        Delete
-                                    </button>
+                                    <div className="ml-card-body">
+                                        <div className="ml-card-name">{listing.produceName}</div>
+                                        <div className="ml-card-meta">
+                                            <span>{listing.quantity} {listing.unit}</span>
+                                            <span className="ml-meta-dot">●</span>
+                                            <span className="ml-card-price">₱{listing.price}/{listing.unit}</span>
+                                        </div>
+                                        <div className="ml-card-tags">
+                                            <span className={`ml-tag ${freshnessTag.cls}`}>{freshnessTag.text}</span>
+                                            <span className="ml-tag tag-category">{listing.category}</span>
+                                        </div>
+                                        <div className="ml-card-location">
+                                            <FaMapMarkerAlt style={{ fontSize: '0.65rem', flexShrink: 0 }} />
+                                            <span>{listing.pickupLocation}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="ml-card-actions">
+                                        <button className="ml-edit-btn" onClick={() => handleOpenEdit(listing)}>
+                                            <FaEdit style={{ fontSize: '0.8rem' }} /> Edit
+                                        </button>
+                                        <button className="ml-delete-btn" onClick={() => handleOpenDelete(listing)}>
+                                            <FaTrashAlt style={{ fontSize: '0.8rem' }} /> Delete
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>
 
-            {/* EDIT MODAL */}
             {showEditModal && (
                 <div className="modal-overlay" onClick={handleCloseEdit}>
                     <div className="modal-box" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
                             <h2>
-                                <FaEdit style={{ color: '#2D6A4F', marginRight: '0.5rem', verticalAlign: 'middle', fontSize: '1.2rem' }} />
+                                <FaEdit style={{ color: '#059669', fontSize: '1.1rem' }} />
                                 Edit Listing
                             </h2>
                             <button className="modal-close" onClick={handleCloseEdit}>✕</button>
@@ -270,7 +265,7 @@ function MyListings() {
                                     <img src={photoPreview} alt="Preview" className="modal-photo-preview" />
                                 ) : (
                                     <div className="modal-photo-placeholder">
-                                        <span>📷</span>
+                                        <FaCamera style={{ fontSize: '2rem' }} />
                                         <p>Upload a photo</p>
                                     </div>
                                 )}
@@ -326,14 +321,14 @@ function MyListings() {
 
                             {submitMsg && (
                                 <div className={`modal-msg ${submitMsg === 'success' ? 'msg-success' : 'msg-error'}`}>
-                                    {submitMsg === 'success' ? 'Listing updated successfully!' : submitMsg.replace('error:', '')}
+                                    {submitMsg === 'success' ? '✅ Listing updated successfully!' : submitMsg.replace('error:', '')}
                                 </div>
                             )}
 
                             <div className="modal-footer">
                                 <button type="button" className="ml-btn-secondary" onClick={handleCloseEdit}>Cancel</button>
                                 <button type="submit" className="ml-btn-primary" disabled={submitting}>
-                                    {submitting ? 'Saving...' : 'Save Changes'}
+                                    {submitting ? 'Saving…' : 'Save Changes'}
                                 </button>
                             </div>
                         </form>
@@ -341,12 +336,11 @@ function MyListings() {
                 </div>
             )}
 
-            {/* DELETE CONFIRMATION MODAL */}
             {showDeleteModal && deletingListing && (
                 <div className="modal-overlay" onClick={handleCloseDelete}>
                     <div className="delete-modal-box" onClick={(e) => e.stopPropagation()}>
                         <div className="delete-modal-icon">
-                            <FaTrashAlt style={{ fontSize: '3rem', color: '#ef4444' }} />
+                            <FaTrashAlt style={{ fontSize: '2.5rem', color: '#dc2626' }} />
                         </div>
                         <h2>Delete Listing?</h2>
                         <p>Are you sure you want to delete <strong>{deletingListing.produceName}</strong>?</p>
@@ -354,7 +348,7 @@ function MyListings() {
                         <div className="delete-modal-actions">
                             <button className="ml-btn-secondary" onClick={handleCloseDelete}>Cancel</button>
                             <button className="ml-btn-delete" onClick={handleConfirmDelete} disabled={deleting}>
-                                {deleting ? 'Deleting...' : 'Yes, Delete'}
+                                {deleting ? 'Deleting…' : 'Yes, Delete'}
                             </button>
                         </div>
                     </div>

@@ -4,56 +4,53 @@ import { getProfile, editProfile, editPassword, uploadPhoto } from '../api/auth'
 import './Profile.css';
 
 import { RiUserFill } from 'react-icons/ri';
-import { FaSignOutAlt } from 'react-icons/fa';
+import { FaSignOutAlt, FaEdit, FaCamera, FaLock, FaSave } from 'react-icons/fa';
 import { MdDashboard } from 'react-icons/md';
 
 function Profile() {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
+    const [user, setUser]   = useState(null);
     const [token, setToken] = useState(null);
 
-    const [editMode, setEditMode] = useState(false);
-    const [fullName, setFullName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [location, setLocation] = useState('');
-    const [profileMsg, setProfileMsg] = useState('');
+    const [editMode, setEditMode]       = useState(false);
+    const [fullName, setFullName]       = useState('');
+    const [phone, setPhone]             = useState('');
+    const [location, setLocation]       = useState('');
+    const [profileMsg, setProfileMsg]   = useState('');
 
     const [showPasswordForm, setShowPasswordForm] = useState(false);
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [passwordMsg, setPasswordMsg] = useState('');
+    const [currentPassword, setCurrentPassword]   = useState('');
+    const [newPassword, setNewPassword]           = useState('');
+    const [passwordMsg, setPasswordMsg]           = useState('');
 
-    const [photoFile, setPhotoFile] = useState(null);
-    const [photoMsg, setPhotoMsg] = useState('');
+    const [photoFile, setPhotoFile]       = useState(null);
+    const [photoMsg, setPhotoMsg]         = useState('');
     const [photoPreview, setPhotoPreview] = useState(null);
 
     useEffect(() => {
-        const stored = sessionStorage.getItem('user');
+        const stored      = sessionStorage.getItem('user');
         const storedToken = sessionStorage.getItem('token');
-        if (!stored || !storedToken) {
-            navigate('/login');
-        } else {
-            const parsedUser = JSON.parse(stored);
-            setUser(parsedUser);
-            setToken(storedToken);
+        if (!stored || !storedToken) { navigate('/login'); return; }
+        const parsedUser = JSON.parse(stored);
+        setUser(parsedUser);
+        setToken(storedToken);
 
-            getProfile(storedToken).then(data => {
-                setFullName(data.fullName || '');
-                setPhone(data.phone || '');
-                setLocation(data.location || '');
-                if (data.photo) setPhotoPreview(data.photo);
-                setUser(prev => ({ ...prev, ...data }));
-            }).catch(() => {});
-        }
+        getProfile(storedToken).then(data => {
+            setFullName(data.fullName || '');
+            setPhone(data.phone || '');
+            setLocation(data.location || '');
+            if (data.photo) setPhotoPreview(data.photo);
+            setUser(prev => ({ ...prev, ...data }));
+        }).catch(() => {});
     }, [navigate]);
 
     const goToDashboard = () => {
         const stored = sessionStorage.getItem('user');
         if (!stored) { navigate('/login'); return; }
         const parsedUser = JSON.parse(stored);
-        if (parsedUser.role === 'FARMER') navigate('/farmer-dashboard');
-        else if (parsedUser.role === 'BUYER') navigate('/buyer-dashboard');
-        else if (parsedUser.role === 'ADMIN') navigate('/admin');
+        if (parsedUser.role === 'FARMER')      navigate('/farmer-dashboard');
+        else if (parsedUser.role === 'BUYER')  navigate('/buyer-dashboard');
+        else if (parsedUser.role === 'ADMIN')  navigate('/admin');
         else navigate('/login');
     };
 
@@ -66,12 +63,12 @@ function Profile() {
     const handleEditProfile = async () => {
         try {
             await editProfile(token, fullName, phone, location);
-            setProfileMsg('Profile updated successfully!');
+            setProfileMsg('success');
             setEditMode(false);
             setUser(prev => ({ ...prev, fullName, phone, location }));
             sessionStorage.setItem('user', JSON.stringify({ ...user, fullName, phone, location }));
-        } catch (e) {
-            setProfileMsg('Failed to update profile.');
+        } catch {
+            setProfileMsg('error');
         }
     };
 
@@ -81,27 +78,24 @@ function Profile() {
             setCurrentPassword('');
             setNewPassword('');
             setShowPasswordForm(false);
-            setPasswordMsg('Password updated successfully! Please login again with your new password.');
-        } catch (e) {
-            setPasswordMsg('Failed. Check your current password.');
+            setPasswordMsg('success');
+        } catch {
+            setPasswordMsg('error');
         }
     };
 
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            setPhotoFile(file);
-            setPhotoPreview(URL.createObjectURL(file));
-        }
+        if (file) { setPhotoFile(file); setPhotoPreview(URL.createObjectURL(file)); }
     };
 
     const handleUploadPhoto = async () => {
         if (!photoFile) return;
         try {
             await uploadPhoto(token, photoFile);
-            setPhotoMsg('Photo uploaded successfully!');
-        } catch (e) {
-            setPhotoMsg('Failed to upload photo.');
+            setPhotoMsg('success');
+        } catch {
+            setPhotoMsg('error');
         }
     };
 
@@ -109,111 +103,237 @@ function Profile() {
 
     return (
         <div className="profile-container">
+
+            {/* NAV */}
             <nav className="profile-nav">
-                <div className="nav-brand">
-                    <span className="nav-title" onClick={goToDashboard} style={{ cursor: 'pointer' }}>
-                        AgriBridge
-                    </span>
+                <div className="profile-nav-brand" onClick={goToDashboard}>
+                    <span className="profile-nav-grain">🌾</span>
+                    <span className="profile-nav-title">AgriBridge</span>
                 </div>
-                <div className="nav-user">
-                    <span className="nav-username">
-                        <RiUserFill style={{ color: '#52B788', marginRight: '0.3rem', verticalAlign: 'middle' }} />
+                <div className="profile-nav-right">
+                    <span className="profile-nav-name">
+                        <RiUserFill style={{ color: '#10b981', fontSize: '0.9rem' }} />
                         {user.fullName}
                     </span>
-                    <button className="logout-btn" onClick={handleLogout}>
-                        <FaSignOutAlt style={{ color: '#ef4444', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '0.85rem' }} />
+                    <button className="profile-nav-btn profile-nav-btn-dashboard" onClick={goToDashboard}>
+                        <MdDashboard style={{ fontSize: '0.95rem' }} />
+                        Dashboard
+                    </button>
+                    <button className="profile-nav-btn profile-nav-btn-logout" onClick={handleLogout}>
+                        <FaSignOutAlt style={{ fontSize: '0.8rem' }} />
                         Logout
                     </button>
                 </div>
             </nav>
 
+            {/* BODY */}
             <div className="profile-body">
-                <button className="back-btn" onClick={goToDashboard}>
-                    <MdDashboard style={{ color: '#2D6A4F', marginRight: '0.35rem', verticalAlign: 'middle', fontSize: '1rem' }} />
-                    Back to Dashboard
-                </button>
+
+                <div className="profile-welcome">
+                    <h1>My Profile</h1>
+                    <p>Manage your account details and preferences.</p>
+                </div>
 
                 <div className="profile-card">
-                    <h2>My Profile</h2>
 
-                    {/* Photo Upload */}
-                    <div className="photo-area">
-                        <img
-                            src={photoPreview || 'https://via.placeholder.com/100'}
-                            alt="Profile"
-                            className="profile-photo"
-                        />
-                        <div className="photo-upload-controls">
-                            <input type="file" accept=".jpg,.png" onChange={handlePhotoChange} />
-                            <button className="btn-green" onClick={handleUploadPhoto}>Upload Photo</button>
+                    {/* PHOTO */}
+                    <div className="profile-photo-section">
+                        <div className="profile-photo-wrap">
+                            {photoPreview ? (
+                                <img src={photoPreview} alt="Profile" className="profile-photo" />
+                            ) : (
+                                <div className="profile-photo-placeholder">👤</div>
+                            )}
+                        </div>
+                        <div className="profile-photo-info">
+                            <h3>{fullName || 'Your Name'}</h3>
+                            <p>{user.email}</p>
+                            <div className="profile-photo-controls">
+                                <input
+                                    type="file"
+                                    accept=".jpg,.png"
+                                    onChange={handlePhotoChange}
+                                    id="profile-photo-input"
+                                    style={{ display: 'none' }}
+                                />
+                                <label htmlFor="profile-photo-input" className="profile-file-label">
+                                    <FaCamera style={{ fontSize: '0.75rem' }} />
+                                    {photoFile ? 'Change Photo' : 'Choose Photo'}
+                                </label>
+                                {photoFile && (
+                                    <button className="profile-upload-btn" onClick={handleUploadPhoto}>
+                                        Upload
+                                    </button>
+                                )}
+                            </div>
                             {photoMsg && (
-                                <p style={{
-                                    color: photoMsg.includes('successfully') ? 'green' : 'red',
-                                    fontWeight: '600',
-                                    fontSize: '0.9rem'
-                                }}>
-                                    {photoMsg}
+                                <p className={`profile-photo-msg ${photoMsg === 'success' ? 'photo-msg-success' : 'photo-msg-error'}`}>
+                                    {photoMsg === 'success' ? '✅ Photo uploaded successfully!' : '❌ Failed to upload photo.'}
                                 </p>
                             )}
                         </div>
                     </div>
 
-                    {/* Profile Info */}
-                    {editMode ? (
-                        <div className="edit-form">
-                            <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Full Name" />
-                            <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone" />
-                            <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Location" />
-                            <div className="form-buttons">
-                                <button className="btn-green" onClick={handleEditProfile}>Save Changes</button>
-                                <button className="btn-outline" onClick={() => { setEditMode(false); setProfileMsg(''); }}>Cancel</button>
-                            </div>
-                            {profileMsg && (
-                                <p style={{
-                                    color: profileMsg.includes('successfully') ? 'green' : 'red',
-                                    fontWeight: '600',
-                                    fontSize: '0.9rem'
-                                }}>
-                                    {profileMsg}
-                                </p>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="profile-info">
-                            <div className="info-row"><span className="info-label">Name</span><span>{fullName}</span></div>
-                            <div className="info-row"><span className="info-label">Email</span><span>{user.email}</span></div>
-                            <div className="info-row"><span className="info-label">Phone</span><span>{phone}</span></div>
-                            <div className="info-row"><span className="info-label">Location</span><span>{location}</span></div>
-                            <div className="info-row"><span className="info-label">Role</span><span>{user.role}</span></div>
-                            <button className="btn-green" onClick={() => setEditMode(true)}>Edit Profile</button>
-                        </div>
-                    )}
+                    {/* INFO / EDIT */}
+                    <div className="profile-info-section">
+                        <p className="profile-section-title">Account Information</p>
 
-                    {/* Password Section */}
-                    <div className="password-area">
-                        <button className="btn-outline" onClick={() => { setShowPasswordForm(!showPasswordForm); setPasswordMsg(''); }}>
+                        {editMode ? (
+                            <div className="profile-edit-form">
+                                <div className="profile-form-grid">
+                                    <div className="profile-form-field full">
+                                        <label>Full Name</label>
+                                        <input
+                                            type="text"
+                                            value={fullName}
+                                            onChange={e => setFullName(e.target.value)}
+                                            placeholder="Your full name"
+                                        />
+                                    </div>
+                                    <div className="profile-form-field">
+                                        <label>Phone</label>
+                                        <input
+                                            type="text"
+                                            value={phone}
+                                            onChange={e => setPhone(e.target.value)}
+                                            placeholder="e.g. 09xx-xxx-xxxx"
+                                        />
+                                    </div>
+                                    <div className="profile-form-field">
+                                        <label>Location</label>
+                                        <input
+                                            type="text"
+                                            value={location}
+                                            onChange={e => setLocation(e.target.value)}
+                                            placeholder="e.g. Talisay, Cebu"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="profile-form-actions">
+                                    <button className="profile-save-btn" onClick={handleEditProfile}>
+                                        <FaSave style={{ fontSize: '0.8rem' }} />
+                                        Save Changes
+                                    </button>
+                                    <button className="profile-cancel-btn" onClick={() => { setEditMode(false); setProfileMsg(''); }}>
+                                        Cancel
+                                    </button>
+                                </div>
+                                {profileMsg && (
+                                    <div className={`profile-form-msg ${profileMsg === 'success' ? 'form-msg-success' : 'form-msg-error'}`}>
+                                        {profileMsg === 'success' ? '✅ Profile updated successfully!' : '❌ Failed to update profile.'}
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <>
+                                <div className="profile-info-rows">
+                                    <div className="profile-info-row">
+                                        <span className="profile-info-label">Name</span>
+                                        <span className={`profile-info-value ${!fullName ? 'empty' : ''}`}>
+                                            {fullName || '—'}
+                                        </span>
+                                    </div>
+                                    <div className="profile-info-row">
+                                        <span className="profile-info-label">Email</span>
+                                        <span className="profile-info-value">{user.email}</span>
+                                    </div>
+                                    <div className="profile-info-row">
+                                        <span className="profile-info-label">Phone</span>
+                                        <span className={`profile-info-value ${!phone ? 'empty' : ''}`}>
+                                            {phone || '—'}
+                                        </span>
+                                    </div>
+                                    <div className="profile-info-row">
+                                        <span className="profile-info-label">Location</span>
+                                        <span className={`profile-info-value ${!location ? 'empty' : ''}`}>
+                                            {location || '—'}
+                                        </span>
+                                    </div>
+                                    <div className="profile-info-row">
+                                        <span className="profile-info-label">Role</span>
+                                        <span className="profile-role-badge">{user.role}</span>
+                                    </div>
+                                </div>
+                                <button className="profile-edit-btn" onClick={() => setEditMode(true)}>
+                                    <FaEdit style={{ fontSize: '0.8rem' }} />
+                                    Edit Profile
+                                </button>
+                            </>
+                        )}
+                    </div>
+
+                    {/* PASSWORD */}
+                    <div className="profile-password-section">
+                        <p className="profile-section-title">Security</p>
+                        <button
+                            className="profile-password-toggle"
+                            onClick={() => { setShowPasswordForm(!showPasswordForm); setPasswordMsg(''); }}
+                        >
+                            <FaLock style={{ fontSize: '0.75rem' }} />
                             {showPasswordForm ? 'Cancel' : 'Change Password'}
                         </button>
+
                         {passwordMsg && (
-                            <p style={{
-                                color: passwordMsg.includes('successfully') ? 'green' : 'red',
-                                fontWeight: '600',
-                                marginTop: '0.5rem',
-                                fontSize: '0.9rem'
-                            }}>
-                                {passwordMsg}
-                            </p>
+                            <div className={`profile-password-msg ${passwordMsg === 'success' ? 'form-msg-success' : 'form-msg-error'}`}>
+                                {passwordMsg === 'success'
+                                    ? '✅ Password updated! Please log in again with your new password.'
+                                    : '❌ Failed. Please check your current password.'}
+                            </div>
                         )}
+
                         {showPasswordForm && (
-                            <div className="edit-form">
-                                <input type="password" value={currentPassword}
-                                    onChange={e => setCurrentPassword(e.target.value)} placeholder="Current Password" />
-                                <input type="password" value={newPassword}
-                                    onChange={e => setNewPassword(e.target.value)} placeholder="New Password" />
-                                <button className="btn-green" onClick={handleEditPassword}>Update Password</button>
+                            <div className="profile-password-form">
+                                <div className="profile-form-field">
+                                    <label>Current Password</label>
+                                    <input
+                                        type="password"
+                                        value={currentPassword}
+                                        onChange={e => setCurrentPassword(e.target.value)}
+                                        placeholder="Enter current password"
+                                        className="profile-form-field input"
+                                        style={{
+                                            padding: '0.65rem 0.9rem',
+                                            border: '1.5px solid var(--gray-200)',
+                                            borderRadius: '10px',
+                                            fontFamily: 'Sora, sans-serif',
+                                            fontSize: '0.88rem',
+                                            color: 'var(--gray-900)',
+                                            background: 'var(--white)',
+                                            outline: 'none',
+                                            transition: 'border-color 0.15s',
+                                        }}
+                                    />
+                                </div>
+                                <div className="profile-form-field">
+                                    <label>New Password</label>
+                                    <input
+                                        type="password"
+                                        value={newPassword}
+                                        onChange={e => setNewPassword(e.target.value)}
+                                        placeholder="Enter new password"
+                                        style={{
+                                            padding: '0.65rem 0.9rem',
+                                            border: '1.5px solid var(--gray-200)',
+                                            borderRadius: '10px',
+                                            fontFamily: 'Sora, sans-serif',
+                                            fontSize: '0.88rem',
+                                            color: 'var(--gray-900)',
+                                            background: 'var(--white)',
+                                            outline: 'none',
+                                            transition: 'border-color 0.15s',
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <button className="profile-save-btn" onClick={handleEditPassword}>
+                                        <FaLock style={{ fontSize: '0.75rem' }} />
+                                        Update Password
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </div>
+
                 </div>
             </div>
         </div>
