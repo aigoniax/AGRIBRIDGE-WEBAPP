@@ -10,12 +10,13 @@ import MyListings from './pages/MyListings.jsx';
 import ListingDetail from './pages/ListingDetail.jsx';
 import MyOrders from './pages/MyOrders.jsx';
 import Chat from './pages/Chat.jsx';
+import LandingPage from './pages/LandingPage.jsx';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
